@@ -1,0 +1,8 @@
+{
+  "name": "cafe-studio",
+  "private": true,
+  "description": "Cafe Studio: Hannah's coffee paintings. A static site with a deck and a preread.",
+  "scripts": {
+    "test": "for f in js/*.js; do node --check \"$f\" || exit 1; done && echo 'all scripts parse'"
+  }
+}

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cafe Studio Deck</title>
+<meta name="description" content="Cafe Studio: coffee-themed art by Hannah, painted with coffee.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Gloock&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;1,400&family=Reenie+Beanie&display=swap">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/deck.css">
+</head>
+<body>
+<div class="deck" id="deck">
+  <div class="stage" id="stage" data-tone="light">
+
+    <section class="slide s-cover" data-tone="light" data-paint="cover" aria-label="Cafe Studio"
+      data-notes="Everything you are about to see was painted with one thing: coffee. Hannah paints coffee-themed art, using coffee.">
+      <canvas class="bg" aria-hidden="true"></canvas>
+      <canvas class="cup-gl" data-cup="cover" aria-hidden="true"></canvas>
+      <div class="cover-copy">
+        <p class="eyebrow">Hand-painted in coffee</p>
+        <h1 class="sr-only">Cafe Studio</h1>
+        <canvas class="wordmark" aria-hidden="true"></canvas>
+        <p class="cover-line">Coffee-themed art by Hannah, painted with coffee.</p>
+      </div>
+      <p class="hint" aria-hidden="true">Press → or tap to begin</p>
+    </section>
+
+    <section class="slide s-statement" data-tone="light" data-paint="plain"
+      data-notes="Hannah's artist statement. Let the quote land, then point at the painting: every tone in it is coffee.">
+      <canvas class="bg" aria-hidden="true"></canvas>
+      <div class="statement">
+        <p class="eyebrow">Artist statement</p>
+        <blockquote><p id="d-quote"></p></blockquote>
+        <p class="body" id="d-quote-2"></p>
+        <p class="sig">Hannah</p>
+      </div>
+      <div class="solo" data-work="spill-the-beans"></div>
+    </section>
+
+    <section class="slide s-artist night" data-tone="dark"
+      data-notes="Hannah trained as an oil painter and taught introductory oil painting for three years. When her daughter was born she wanted a safer, non-toxic studio, set oils aside, and found coffee.">
+      <div class="artist-copy">
+        <p class="eyebrow">The artist</p>
+        <h2 class="display">From oil paint to coffee.</h2>
+        <ul class="facts">
+          <li><span>Trained</span>Bachelor’s degree in Studio Art, focused on traditional oil painting</li>
+          <li><span>Taught</span>Introductory oil painting for three years</li>
+          <li><span>Turned to coffee</span>After her daughter was born, for a safer, non-toxic studio</li>
+        </ul>
+        <p class="body">Today she paints monochromatic works that celebrate everyday moments and connection.</p>
+      </div>
+      <div class="solo" data-work="percolate"></div>
+    </section>
+
+    <section class="slide s-palette" data-tone="light" data-paint="plain"
+      data-notes="There is only one color. Weak coffee gives the pale golden washes, strong coffee goes almost black, and everything in between is how much water goes in.">
+      <canvas class="bg" aria-hidden="true"></canvas>
+      <header class="head">
+        <p class="eyebrow">The medium</p>
+        <h2>One coffee, every tone.</h2>
+        <p class="body">Every tone comes from how much water goes into the brush.</p>
+      </header>
+      <ol class="swatches" id="d-swatches"></ol>
+      <p class="axis" aria-hidden="true"><span>weaker</span><i></i><span>stronger</span></p>
+    </section>
+
+    <section class="slide s-process" data-tone="light" data-paint="plain"
+      data-notes="How a coffee painting is built, shown with a quick study: pale washes first, let each layer dry, build toward dark, details last.">
+      <canvas class="bg" aria-hidden="true"></canvas>
+      <header class="head">
+        <p class="eyebrow">The process</p>
+        <h2>A painting, one layer at a time.</h2>
+      </header>
+      <ol class="stages" id="d-stages"></ol>
+      <p class="demo-note">A quick study to show the method. Hannah’s paintings follow.</p>
+    </section>
+
+    <section class="slide s-series wall" data-tone="dark"
+      data-notes="Six series, all coffee-themed and all painted in coffee. We will walk through them one wall at a time.">
+      <header class="head">
+        <p class="eyebrow">The collection</p>
+        <h2>Six series, one medium.</h2>
+      </header>
+      <ul class="series-grid" id="d-series"></ul>
+    </section>
+
+    <section class="slide s-wall wall" data-tone="dark" data-series="cool-beans"
+      data-notes="Cool Beans. Coffee beans, up close, in every arrangement.">
+      <header class="head"><p class="eyebrow"></p><h2></h2></header>
+      <div class="hang"></div>
+    </section>
+
+    <section class="slide s-wall wall" data-tone="dark" data-series="pairs-well-with"
+      data-notes="Pairs Well With. The treats that belong next to a cup.">
+      <header class="head"><p class="eyebrow"></p><h2></h2></header>
+      <div class="hang"></div>
+    </section>
+
+    <section class="slide s-wall wall" data-tone="dark" data-series="coach"
+      data-notes="My Coach and a Coffee. Coach bags, breakfast and the morning cup.">
+      <header class="head"><p class="eyebrow"></p><h2></h2></header>
+      <div class="hang"></div>
+    </section>
+
+    <section class="slide s-wall wall" data-tone="dark" data-series="golden-hour,coffee-makers"
+      data-notes="Golden Hour and Coffee Makers. Two of these are painted on wood panels.">
+      <header class="head"><p class="eyebrow">Two more series</p><h2>Golden Hour &amp; Coffee Makers</h2></header>
+      <div class="hang"></div>
+    </section>
+
+    <section class="slide s-close-up night" data-tone="dark"
+      data-notes="Up close you can see the texture of the coffee. It varies from piece to piece, which is what gives each one its character.">
+      <header class="head">
+        <p class="eyebrow">Up close</p>
+        <h2>The human touch, in coffee.</h2>
+      </header>
+      <ul class="close-ups" id="d-closeups"></ul>
+    </section>
+
+    <section class="slide s-collect" data-tone="light" data-paint="plain"
+      data-notes="What collectors should know: pieces come pre-matted with sizing included, frames are for staging only, shipping is extra, and coffee asks for a little care.">
+      <canvas class="bg" aria-hidden="true"></canvas>
+      <header class="head">
+        <p class="eyebrow">Collecting a piece</p>
+        <h2>Good to know.</h2>
+      </header>
+      <ul class="collect-list" id="d-fyi"></ul>
+      <div class="care-box">
+        <p class="care-title" id="d-care-intro"></p>
+        <ul id="d-care"></ul>
+        <p class="care-note" id="d-care-note"></p>
+      </div>
+    </section>
+
+    <section class="slide s-close night" data-tone="dark"
+      data-notes="Close on the invitation. Leave the contact details up while you take questions.">
+      <canvas class="cup-gl" data-cup="close" aria-hidden="true"></canvas>
+      <div class="close-copy">
+        <p class="eyebrow">Cafe Studio</p>
+        <h2 class="display">Let’s talk coffee art.</h2>
+        <ul class="contact" id="d-contact"></ul>
+      </div>
+    </section>
+
+    <canvas class="edge" id="edge" aria-hidden="true"></canvas>
+
+    <footer class="ui" aria-label="Slide controls">
+      <span class="ui-brand">Cafe Studio</span>
+      <ol class="dots" id="dots"></ol>
+      <span class="ui-right">
+        <button type="button" class="ui-btn" id="btn-notes" aria-pressed="false">Notes</button>
+        <button type="button" class="ui-btn" id="btn-prev" aria-label="Previous slide">←</button>
+        <span class="count" id="count" aria-live="polite">01 / 13</span>
+        <button type="button" class="ui-btn" id="btn-next" aria-label="Next slide">→</button>
+      </span>
+    </footer>
+  </div>
+
+  <aside class="notes" id="notes" hidden>
+    <p class="eyebrow">Speaker notes · press N to hide</p>
+    <p id="notes-text"></p>
+  </aside>
+</div>
+
+<script src="js/studio.js" defer></script>
+<script src="js/brew.js" defer></script>
+<script src="js/crema.js" defer></script>
+<script src="js/deck.js" defer></script>
+</body>
+</html>

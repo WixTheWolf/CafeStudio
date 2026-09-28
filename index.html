@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cafe Studio</title>
+<meta name="description" content="Coffee-themed art by Hannah, painted with coffee.">
+<meta name="theme-color" content="#1c120c">
+<meta property="og:title" content="Cafe Studio">
+<meta property="og:description" content="Coffee-themed art by Hannah, painted with coffee.">
+<meta property="og:image" content="images/works/but-first-tabby.jpg">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Gloock&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;1,400&family=Reenie+Beanie&display=swap">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+<a class="skip" href="#medium">Skip the opening</a>
+
+<div class="stage" id="stage" aria-hidden="true">
+  <canvas class="stage-paper" id="paper"></canvas>
+  <div class="stage-wall" id="wall"></div>
+  <canvas class="stage-land" id="land"></canvas>
+  <canvas class="stage-cup" id="cup"></canvas>
+</div>
+
+<header class="bar" id="bar">
+  <a class="bar-mark" href="#top">Cafe Studio</a>
+  <nav class="bar-nav" aria-label="Sections">
+    <a href="#work">Work</a>
+    <a href="#artist">About</a>
+    <a href="#collect">Collect</a>
+  </nav>
+</header>
+
+<nav class="rail" id="rail" aria-label="Chapters">
+  <a href="#top" data-for="cup"><span>The cup</span></a>
+  <a href="#medium" data-for="ring"><span>The medium</span></a>
+  <a href="#palette" data-for="strength"><span>The palette</span></a>
+  <a href="#process" data-for="layers"><span>The process</span></a>
+  <a href="#work" data-for="gallery"><span>The collection</span></a>
+  <a href="#artist" data-for="night"><span>Hannah</span></a>
+</nav>
+
+<main>
+  <section class="w w-cup" id="top" data-w="cup">
+    <div class="pin">
+      <div class="hero" id="hero">
+        <p class="eyebrow">Hand-painted in coffee by Hannah</p>
+        <h1 class="hero-title">Cafe <span>Studio</span></h1>
+        <div class="hero-foot">
+          <p class="hero-lede">Coffee-themed art, painted with coffee. Scroll, and watch a piece come together.</p>
+          <p class="cue" aria-hidden="true"><span>Scroll</span><i></i></p>
+        </div>
+      </div>
+      <p class="cup-line" id="cup-line-1">Every painting starts the same way.</p>
+      <div class="cup-line cup-line-2" id="cup-line-2">
+        <p>Lift the cup and the coffee leaves a ring behind.</p>
+        <p class="cup-line-sub">Hannah paints with that same coffee.</p>
+      </div>
+      <p class="pencil" id="pencil" aria-hidden="true"><svg viewBox="0 0 46 34"><path d="M44 30 C 30 32 14 24 5 6"/><path d="M5 6 L 4 16 M5 6 L 13 11"/></svg>the dark rim forms as it dries</p>
+    </div>
+  </section>
+
+  <section class="w w-ring" id="medium" data-w="ring">
+    <div class="beat">
+      <p class="eyebrow">The medium</p>
+      <h2>One ingredient.</h2>
+      <p>“I paint coffee-themed art using coffee. The bold, rich, and natural warmth of the medium translates onto paper to delight your senses.”</p>
+    </div>
+    <figure class="beat beat-right beat-quote">
+      <blockquote><p>In a world chasing perfection, I have a deep appreciation for art that shows the human touch.</p></blockquote>
+      <figcaption>Hannah, artist statement</figcaption>
+    </figure>
+  </section>
+
+  <section class="w w-strength" id="palette" data-w="strength">
+    <div class="pin">
+      <div class="strength-head">
+        <p class="eyebrow">The palette</p>
+        <h2>One coffee, every tone.</h2>
+        <p>Weak coffee gives a pale golden wash. Strong coffee dries almost black. Every tone between comes from how much water goes into the brush, which is why the work is monochromatic.</p>
+      </div>
+      <ol class="swatches" id="swatches"></ol>
+      <p class="axis" aria-hidden="true"><span>weaker</span><i></i><span>stronger</span></p>
+    </div>
+  </section>
+
+  <section class="w w-layers" id="process" data-w="layers">
+    <div class="card beat process-head">
+      <p class="eyebrow">The process</p>
+      <h2>A painting, one layer at a time.</h2>
+      <p>Keep scrolling and this bean study paints itself the way a coffee painting is built: light to dark, one dry layer over the last.</p>
+    </div>
+    <ol class="steps" id="steps"></ol>
+    <div class="card beat finish">
+      <p class="finish-line">That is the whole method, shown in a quick study. Now for Hannah’s paintings.</p>
+    </div>
+  </section>
+
+  <section class="w w-gallery" id="work" data-w="gallery">
+    <div class="pin g-pin">
+      <header class="g-head" id="g-head">
+        <p class="eyebrow">The collection</p>
+        <h2>Six series, one medium.</h2>
+        <p class="g-note" id="g-note">Every piece is an original, painted by hand with coffee. Tap a painting to see it up close.</p>
+      </header>
+      <div class="g-track" id="track"></div>
+    </div>
+  </section>
+
+  <section class="night" id="artist" data-w="night">
+    <div class="night-edge" aria-hidden="true">
+      <svg viewBox="0 0 2880 120" preserveAspectRatio="none"><path d="M0 60 C 240 20 480 20 720 60 S 1200 100 1440 60 S 1920 20 2160 60 S 2640 100 2880 60 V120 H0 Z"/></svg>
+      <svg viewBox="0 0 2880 120" preserveAspectRatio="none"><path d="M0 70 C 240 40 480 40 720 70 S 1200 100 1440 70 S 1920 40 2160 70 S 2640 100 2880 70 V120 H0 Z"/></svg>
+    </div>
+    <canvas class="steam" id="steam" aria-hidden="true"></canvas>
+
+    <div class="night-inner">
+      <div class="artist">
+        <div class="artist-head">
+          <p class="eyebrow">The artist</p>
+          <h2>From oil paint to coffee.</h2>
+          <figure class="artist-art">
+            <img src="images/works/percolate.jpg" alt="Percolate, a coffee painting of a drip coffee maker" loading="lazy">
+            <figcaption>Percolate · Coffee Makers</figcaption>
+          </figure>
+        </div>
+        <div class="artist-bio" id="bio"></div>
+      </div>
+
+      <div class="collect" id="collect">
+        <p class="eyebrow">Collecting a piece</p>
+        <h2>Good to know before you buy.</h2>
+        <ul class="fyi" id="fyi"></ul>
+      </div>
+
+      <div class="enquire" id="enquire">
+        <div class="enquire-copy">
+          <p class="eyebrow">Ask Hannah</p>
+          <h2>See something you love?</h2>
+          <p class="lede">Ask about a piece, its size and price, or share an idea of your own. Tell Hannah which painting caught your eye and she will get back to you.</p>
+        </div>
+
+        <form class="c-form" id="c-form" novalidate>
+          <h3>Start an enquiry</h3>
+          <div class="field">
+            <label for="c-piece">Which piece?</label>
+            <select id="c-piece" name="piece"></select>
+          </div>
+          <div class="field">
+            <label for="c-name">Your name</label>
+            <input id="c-name" name="name" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="c-email">Email</label>
+            <input id="c-email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="c-idea">Your message</label>
+            <textarea id="c-idea" name="message" rows="3" placeholder="Is it still available? Where would it ship from?"></textarea>
+          </div>
+          <p class="c-error" id="c-error" role="alert" hidden></p>
+          <button type="submit" class="btn">Write my enquiry</button>
+          <div class="c-out" id="c-out" hidden>
+            <p class="eyebrow">Your enquiry</p>
+            <pre id="c-text"></pre>
+            <div class="c-actions">
+              <a class="btn" id="c-mail" href="#" hidden>Email Hannah</a>
+              <button type="button" class="btn btn-quiet" id="c-copy">Copy message</button>
+            </div>
+            <p class="c-help" id="c-help"></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="sheet" id="sheet" data-w="sheet">
+  <canvas class="sheet-paper" id="sheet-paper" aria-hidden="true"></canvas>
+  <div class="sheet-inner">
+    <canvas class="sheet-mark" id="sheet-mark" role="img" aria-label="Cafe Studio"></canvas>
+    <p class="sheet-line">Coffee-themed art by Hannah, painted with coffee.</p>
+    <div class="care">
+      <h3>Caring for coffee art</h3>
+      <p id="care-intro"></p>
+      <ul id="care"></ul>
+      <p id="care-note"></p>
+    </div>
+    <p class="fine"><span>© 2026 <span id="legal">Cafe Studio, LLC</span></span><span id="contact-line"></span></p>
+  </div>
+</footer>
+
+<dialog class="viewer" id="viewer" aria-labelledby="v-title">
+  <div class="v-inner">
+    <div class="v-media">
+      <div class="v-art" id="v-art"></div>
+      <div class="v-thumbs" id="v-thumbs"></div>
+    </div>
+    <div class="v-text">
+      <p class="eyebrow" id="v-meta">Series</p>
+      <h3 id="v-title">Painting</h3>
+      <p id="v-blurb"></p>
+      <p class="v-note" id="v-note"></p>
+      <div class="v-actions">
+        <a class="btn" href="#enquire" id="v-ask">Ask about this piece</a>
+        <button type="button" class="btn btn-quiet" id="v-close">Close</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script src="js/studio.js" defer></script>
+<script src="js/brew.js" defer></script>
+<script src="js/crema.js" defer></script>
+<script src="js/site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+/* Cafe Studio: shared tokens for the site, the deck and the preread.
+   Every color is a coffee or something that sits beside it: the espresso,
+   the golden crema, steamed milk, the cotton paper it is painted on, and the
+   deep green-grey wall the finished pieces hang on. */
+:root {
+  --espresso: #1c120c;
+  --espresso-2: #2a1b12;
+  --roast: #5b3721;
+  --crema: #d39b5c;
+  --crema-deep: #b67a3e;
+  --milk: #f3e3c8;
+  --paper: #efeae0;
+  --paper-2: #e6dfd1;
+  --ink: #2a1a10;
+  --ink-soft: #6a5341;
+  --wall: #1f2d2c;
+  --wall-deep: #142120;
+  --water: #9dbbb5;
+
+  --f-display: "Gloock", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --f-body: "Hanken Grotesk", "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
+  --f-mono: "DM Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --f-hand: "Reenie Beanie", "Bradley Hand", "Segoe Print", cursive;
+
+  --gut: clamp(16px, 5vw, 64px);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+h1, h2, h3 { text-wrap: balance; font-weight: 400; }
+p { text-wrap: pretty; }
+
+.eyebrow {
+  margin: 0;
+  font: 500 0.75rem/1.3 var(--f-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--crema);
+  outline-offset: 3px;
+}

@@ -22,7 +22,8 @@
 <div class="stage" id="stage" aria-hidden="true">
   <canvas class="stage-paper" id="paper"></canvas>
   <div class="stage-wall" id="wall"></div>
-  <canvas class="stage-land" id="land"></canvas>
+  <canvas class="stage-dev" id="dev"></canvas>
+  <img class="stage-dev-still" id="dev-still" alt="">
   <canvas class="stage-cup" id="cup"></canvas>
 </div>
 
@@ -41,6 +42,8 @@
   <a href="#palette" data-for="strength"><span>The palette</span></a>
   <a href="#process" data-for="layers"><span>The process</span></a>
   <a href="#work" data-for="gallery"><span>The collection</span></a>
+  <a href="#closer" data-for="closer"><span>Up close</span></a>
+  <a href="#home" data-for="home"><span>At home</span></a>
   <a href="#artist" data-for="night"><span>Hannah</span></a>
 </nav>
 
@@ -51,7 +54,7 @@
         <p class="eyebrow">Hand-painted in coffee by Hannah</p>
         <h1 class="hero-title">Cafe <span>Studio</span></h1>
         <div class="hero-foot">
-          <p class="hero-lede">Coffee-themed art, painted with coffee. Scroll, and watch a piece come together.</p>
+          <p class="hero-lede">Coffee-themed art, painted with coffee. Scroll, and watch one of Hannah’s paintings come together.</p>
           <p class="cue" aria-hidden="true"><span>Scroll</span><i></i></p>
         </div>
       </div>
@@ -92,11 +95,12 @@
     <div class="card beat process-head">
       <p class="eyebrow">The process</p>
       <h2>A painting, one layer at a time.</h2>
-      <p>Keep scrolling and this bean study paints itself the way a coffee painting is built: light to dark, one dry layer over the last.</p>
+      <p>Keep scrolling and <em id="feature-name">this painting</em> comes back together the way it was made: light to dark, one dry layer over the last.</p>
+      <p class="process-note">Animated from Hannah’s finished painting.</p>
     </div>
     <ol class="steps" id="steps"></ol>
     <div class="card beat finish">
-      <p class="finish-line">That is the whole method, shown in a quick study. Now for Hannah’s paintings.</p>
+      <p class="finish-line"><span id="feature-done">Finished</span>. Now let’s hang it with the rest.</p>
     </div>
   </section>
 
@@ -108,6 +112,32 @@
         <p class="g-note" id="g-note">Every piece is an original, painted by hand with coffee. Tap a painting to see it up close.</p>
       </header>
       <div class="g-track" id="track"></div>
+    </div>
+  </section>
+
+  <section class="w w-close" id="closer" data-w="closer">
+    <div class="pin close-pin">
+      <canvas class="close-dev" id="close-dev" aria-hidden="true"></canvas>
+      <div class="close-stills" id="close-stills" aria-hidden="true"></div>
+      <div class="close-shade" aria-hidden="true"></div>
+      <header class="close-head" id="close-head">
+        <p class="eyebrow">Up close</p>
+        <h2>The human touch.</h2>
+        <p id="close-note"></p>
+      </header>
+      <ol class="close-caps" id="close-caps"></ol>
+      <ol class="close-dots" id="close-dots" aria-hidden="true"></ol>
+    </div>
+  </section>
+
+  <section class="w w-home" id="home" data-w="home">
+    <div class="home-light" aria-hidden="true"><i></i></div>
+    <div class="home-photos" id="home-photos"></div>
+    <div class="home-copy">
+      <p class="eyebrow">At home</p>
+      <h2>Where coffee art belongs.</h2>
+      <p>Beside the grinder, above the espresso machine, next to the morning cup. Tap a photo to see the piece.</p>
+      <p class="home-small">Frames in these photos are for staging and are not included.</p>
     </div>
   </section>
 
@@ -216,6 +246,7 @@
 <script src="js/studio.js" defer></script>
 <script src="js/brew.js" defer></script>
 <script src="js/crema.js" defer></script>
+<script src="js/develop.js" defer></script>
 <script src="js/site.js" defer></script>
 </body>
 </html>

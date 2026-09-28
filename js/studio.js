@@ -40,7 +40,7 @@ window.STUDIO = {
     { title: "Shipping", text: "Pricing does not include shipping.", photo: "images/works/percolate-home.jpg" }
   ],
 
-  // A light-to-dark scale of the one coffee. The site's bean study uses it.
+  // A light-to-dark scale of the one coffee, for the palette.
   strengths: [
     { name: "Café au lait", s: 0.06 },
     { name: "Latte",        s: 0.2 },
@@ -50,14 +50,17 @@ window.STUDIO = {
     { name: "Ristretto",    s: 0.96 }
   ],
 
-  // How a coffee painting comes together, shown on the site with a bean
-  // study that paints itself. `layers` names the study's layers each step
-  // paints. The study is a demonstration, not one of Hannah's pieces.
+  // The painting the site builds up as you scroll, one wash at a time. The
+  // animation is made from the finished piece, so it ends as the photo.
+  feature: "bean-up-for-hours",
+
+  // How a coffee painting comes together. Each step brings the feature
+  // painting through one more stage, from pale washes to the darkest details.
   process: [
-    { title: "Pale washes first", text: "Each bean starts as a pale golden shape in the weakest brew, while the paper is still the lightest thing on the page.", layers: ["wash"] },
-    { title: "Let every layer dry", text: "Wet coffee keeps moving. The shadows go in only once the first wash has dried, or the edges run together.", layers: ["shadow"] },
-    { title: "Build toward dark", text: "Stronger coffee rounds out each bean, deepest where it turns away from the light.", layers: ["form"] },
-    { title: "Details last", text: "The crease down each bean and the darkest accents go in with the strongest coffee, and highlights are lifted back out.", layers: ["crease", "light", "details"] }
+    { title: "Pale washes first", text: "Each bean starts as a pale golden shape in the weakest brew, while the paper is still the lightest thing on the page." },
+    { title: "Let every layer dry", text: "Wet coffee keeps moving. The next wash goes in only once the last has dried, or the edges run together." },
+    { title: "Build toward dark", text: "Stronger coffee rounds out each bean, deepest where it turns away from the light." },
+    { title: "Details last", text: "The crease down each bean and the darkest accents go in last, with the strongest coffee." }
   ],
 
   // Series, in the order they hang. `count` is the size of the whole series,
@@ -75,17 +78,18 @@ window.STUDIO = {
   // mount: "matted" (photo shows the matted piece), "art" (the painting
   // itself), "panel" (a wood panel), "oval" (an oval wood panel).
   works: [
+    { slug: "bean-up-for-hours", title: "Bean Up For Hours", series: "cool-beans", mount: "art", ratio: 1.37, home: true },
     { slug: "its-bean-a-while", title: "It’s Bean a While", series: "cool-beans", mount: "matted", ratio: 1.267 },
     { slug: "youve-bean-amazing", title: "You’ve Bean Amazing", series: "cool-beans", mount: "matted", ratio: 1.243, home: true },
     { slug: "spill-the-beans", title: "Spill the Beans", series: "cool-beans", mount: "matted", ratio: 0.742 },
     { slug: "its-bean-real", title: "It’s Bean Real", series: "cool-beans", mount: "matted", ratio: 1.107, home: true },
     { slug: "bean-thinking-of-you", title: "Bean Thinking of You", series: "cool-beans", mount: "matted", ratio: 1.244 },
-    { slug: "bean-up-for-hours", title: "Bean Up For Hours", series: "cool-beans", mount: "art", ratio: 1.37, home: true },
 
     { slug: "the-perfect-pair", title: "The Perfect Pair", series: "pairs-well-with", mount: "art", ratio: 0.75 },
     { slug: "fresh-baked", title: "Fresh Baked", series: "pairs-well-with", mount: "matted", ratio: 0.768, detail: true, home: true },
     { slug: "every-last-crumb", title: "Every Last Crumb", series: "pairs-well-with", mount: "art", ratio: 1.333, home: true },
     { slug: "sticky-honey-pancake-balls", title: "Sticky Honey Pancake Balls", series: "pairs-well-with", mount: "matted", ratio: 1.23, home: true },
+    { slug: "a-pleasant-pause", title: "A Pleasant Pause", series: "pairs-well-with", mount: "matted", ratio: 1.289, detail: true },
 
     { slug: "but-first-tabby", title: "But First, Tabby", series: "coach", mount: "matted", ratio: 1.281, detail: true },
     { slug: "a-classic-breakfast", title: "A Classic Breakfast", series: "coach", mount: "matted", ratio: 1.302, detail: true },
@@ -95,10 +99,7 @@ window.STUDIO = {
     { slug: "not-just-a-dopio", title: "Not Just a Dopio", series: "golden-hour", mount: "matted", ratio: 1.296, home: true },
 
     { slug: "percolate", title: "Percolate", series: "coffee-makers", mount: "matted", ratio: 0.787, home: true },
-    { slug: "full-body", title: "Full Body", series: "coffee-makers", mount: "oval", ratio: 0.747, home: true },
-
-    // Photos of this one are in Hannah's Drive but were too large to bring in.
-    { slug: "a-pleasant-pause", title: "A Pleasant Pause", series: "", mount: "matted", ratio: 1.25, photo: null }
+    { slug: "full-body", title: "Full Body", series: "coffee-makers", mount: "oval", ratio: 0.747, home: true }
   ]
 };
 
@@ -114,6 +115,7 @@ window.STUDIO = {
   S.hung = function () { return S.works.filter(function (w) { return w.photo; }); };
   S.inSeries = function (id) { return S.hung().filter(function (w) { return w.series === id; }); };
   S.pieces = function (n) { return n + (n === 1 ? " piece" : " pieces"); };
+  S.work = function (slug) { return S.works.filter(function (w) { return w.slug === slug; })[0]; };
   S.total = function () { return S.series.reduce(function (t, se) { return t + se.count; }, 0); };
   // What a series is still missing photos of, or "" when every piece is shown.
   S.toCome = function (se) {

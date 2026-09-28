@@ -67,7 +67,7 @@
   S.process.forEach(function (p, i) {
     var li = el("li"), c = el("canvas");
     c.setAttribute("role", "img");
-    c.setAttribute("aria-label", "The bean study after step " + (i + 1));
+    c.setAttribute("aria-label", S.work(S.feature).title + " after step " + (i + 1));
     li.appendChild(c);
     li.appendChild(el("span", "n", "Step " + (i + 1)));
     li.appendChild(el("h3", null, p.title));
@@ -155,20 +155,39 @@
     reveal(c, src);
   }
 
+  // Hannah's feature painting at the end of each step, from the same WebGL
+  // build the site uses; without WebGL every step shows the finished piece.
   function paintStages(cs) {
-    var k = fit(cs[0]), w = cs[0].width, h = cs[0].height;
-    var plan = B.plan("beans", w, h, 11), paper = B.sheet(w, h), shown = [];
-    B.paper(paper.getContext("2d"), w, h, { grainScale: k });
-    var layers = plan.map(function (L, i) { return B.paintLayer(L, i, w, h, 11); });
-    cs.forEach(function (c, si) {
-      c.width = w;
-      c.height = h;
-      shown = shown.concat(S.process[si] ? S.process[si].layers : []);
-      var src = B.sheet(w, h), ctx = src.getContext("2d");
-      ctx.drawImage(paper, 0, 0);
-      ctx.globalCompositeOperation = "multiply";
-      plan.forEach(function (L, i) { if (shown.indexOf(L.name) >= 0) ctx.drawImage(layers[i], 0, 0); });
-      reveal(c, src);
+    fit(cs[0]);
+    var w = cs[0].width, h = cs[0].height, f = S.work(S.feature);
+    var off = document.createElement("canvas"), D = window.Develop ? new window.Develop(off, { maxScale: 1 }) : null;
+    function each(draw) {
+      cs.forEach(function (c, i) {
+        c.width = w;
+        c.height = h;
+        var src = B.sheet(w, h);
+        draw(src.getContext("2d"), i);
+        reveal(c, src);
+      });
+    }
+    if (!D || !D.ok) {
+      var im = new Image();
+      im.onload = function () {
+        each(function (ctx) {
+          var s = Math.max(w / im.width, h / im.height), iw = im.width * s, ih = im.height * s;
+          ctx.drawImage(im, (w - iw) / 2, (h - ih) / 2, iw, ih);
+        });
+      };
+      im.src = f.photo;
+      return;
+    }
+    D.resize(w, h);
+    D.load(f.photo, function () {
+      each(function (ctx, i) {
+        D.state = null;
+        D.draw({ a: f.photo, rect: [0, 0, w, h], build: i + 1, seed: 4.2 });
+        ctx.drawImage(off, 0, 0);
+      });
     });
   }
 

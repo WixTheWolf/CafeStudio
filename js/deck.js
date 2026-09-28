@@ -7,7 +7,7 @@
 (function () {
   "use strict";
 
-  var S = window.STUDIO, B = window.Brew, Crema = window.Crema;
+  var S = window.STUDIO, B = window.Brew, Crema = window.Crema, Develop = window.Develop;
   if (!S || !B) return;
   var reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   var TAU = Math.PI * 2;
@@ -63,9 +63,14 @@
       });
       if (!best || h > best.h) best = { h: h, split: split };
     }
+    var n = 0;
     best.split.forEach(function (row) {
       var r = el("div", "hang-row");
-      row.forEach(function (w) { r.appendChild(frameFor(w, best.h)); });
+      row.forEach(function (w) {
+        var f = frameFor(w, best.h);
+        f.style.setProperty("--i", n++);
+        r.appendChild(f);
+      });
       box.appendChild(r);
     });
   }
@@ -112,11 +117,12 @@
     hang($(".hang", sl), works, { w: 1380, h: 590, max: works.length <= 3 ? 470 : 420 });
   });
 
-  [["but-first-tabby", "detail"], ["a-classic-breakfast", "detail"], ["fresh-baked", "detail"], ["the-perfect-pair", ""]].forEach(function (p) {
-    var w = work(p[0]);
-    if (!w) return;
+  ["a-pleasant-pause", "but-first-tabby", "a-classic-breakfast", "fresh-baked"].forEach(function (slug, i) {
+    var w = work(slug);
+    if (!w || !w.detailPhoto) return;
     var li = el("li"), img = el("img");
-    img.src = p[1] ? w.detailPhoto : w.photo;
+    li.style.setProperty("--i", i);
+    img.src = w.detailPhoto;
     img.alt = w.title + ", up close";
     img.decoding = "async";
     li.appendChild(img);
@@ -207,21 +213,32 @@
     B.washText(ctx, "Studio", f(206), 120 * sc, 392 * sc, B.rng(32), { s: 0.7, u: sc * 1.2 });
   }
 
+  // Hannah's feature painting at the end of each step, rendered once with
+  // the same WebGL build the site uses. Without WebGL each step shows the
+  // finished piece.
   function paintStages(cs) {
     size(cs[0], 2);
-    var w = cs[0].width, h = cs[0].height;
+    var w = cs[0].width, h = cs[0].height, f = S.work(S.feature);
     cs.forEach(function (c) { c.width = w; c.height = h; });
-    var plan = B.plan("beans", w, h, 11), paper = B.sheet(w, h);
-    B.paper(paper.getContext("2d"), w, h, { grainScale: w / 321 });
-    var layers = plan.map(function (L, i) { return B.paintLayer(L, i, w, h, 11); });
-    var shown = [];
-    cs.forEach(function (c, si) {
-      shown = shown.concat(S.process[si] ? S.process[si].layers : []);
-      var ctx = c.getContext("2d");
-      ctx.drawImage(paper, 0, 0);
-      ctx.globalCompositeOperation = "multiply";
-      plan.forEach(function (L, i) { if (shown.indexOf(L.name) >= 0) ctx.drawImage(layers[i], 0, 0); });
-      ctx.globalCompositeOperation = "source-over";
+    var off = document.createElement("canvas"), D = Develop ? new Develop(off, { maxScale: 1 }) : null;
+    if (!D || !D.ok) {
+      var im = new Image();
+      im.onload = function () {
+        cs.forEach(function (c) {
+          var s = Math.max(w / im.width, h / im.height), iw = im.width * s, ih = im.height * s;
+          c.getContext("2d").drawImage(im, (w - iw) / 2, (h - ih) / 2, iw, ih);
+        });
+      };
+      im.src = f.photo;
+      return;
+    }
+    D.resize(w, h);
+    D.load(f.photo, function () {
+      cs.forEach(function (c, i) {
+        D.state = null;
+        D.draw({ a: f.photo, rect: [0, 0, w, h], build: i + 1, seed: 4.2 });
+        c.getContext("2d").drawImage(off, 0, 0);
+      });
     });
   }
 
@@ -284,6 +301,14 @@
     paintSlide(i - 1);
   }
 
+  // restart a slide's entrance: frames swing onto their hooks and photos
+  // develop from a pale wet wash to their true tones
+  function enter(s) {
+    s.classList.remove("enter");
+    void s.offsetWidth;
+    s.classList.add("enter");
+  }
+
   function go(n) {
     n = clamp(n, 0, slides.length - 1);
     if (transition) transition.finish();
@@ -292,6 +317,7 @@
     cur = n;
     show(n);
     to.classList.add("active");
+    enter(to);
     from.style.zIndex = "2";
     to.style.zIndex = "3";
 
@@ -415,6 +441,7 @@
   cur = m ? clamp(parseInt(m[1], 10) - 1, 0, slides.length - 1) : 0;
   fit();
   slides[cur].classList.add("active");
+  enter(slides[cur]);
   show(cur);
   requestAnimationFrame(frame);
 })();

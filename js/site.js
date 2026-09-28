@@ -2,20 +2,21 @@
 
    The page is one sheet of paper. Scrolling pulls back from a cup of coffee,
    lifts the cup and leaves its ring. The ring blooms, the palette appears,
-   a bean study paints itself one dry layer at a time and is framed and hung
-   on the gallery wall beside Hannah's series, and then the lights go down in
-   the night café, where she tells her story. Everything on the stage is a function of scroll position,
-   so it plays the same forwards and backwards. */
+   and one of Hannah's paintings comes back together on the paper, wash by
+   wash, before it is framed and hung on the gallery wall with the rest of
+   her work. Then her close-ups fill the screen, her kitchen photos drift by
+   in morning light, and the lights go down in the night café, where she
+   tells her story. Everything on the stage is a function of scroll
+   position, so it plays the same forwards and backwards. */
 (function () {
   "use strict";
 
-  var S = window.STUDIO, B = window.Brew, Crema = window.Crema;
-  if (!S || !B || !Crema) return;
+  var S = window.STUDIO, B = window.Brew, Crema = window.Crema, Develop = window.Develop;
+  if (!S || !B || !Crema || !Develop) return;
 
   var doc = document.documentElement;
   doc.classList.add("js");
   var reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  var LAND_SEED = 11;
 
   function $(s, r) { return (r || document).querySelector(s); }
   function el(tag, cls, text) {
@@ -29,13 +30,14 @@
   function smooth(a, b, v) { var t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); }
   function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
 
-  var stageEl = $("#stage"), paperC = $("#paper"), landC = $("#land"), wall = $("#wall"), cupC = $("#cup");
+  var stageEl = $("#stage"), paperC = $("#paper"), devC = $("#dev"), devStill = $("#dev-still"), wall = $("#wall"), cupC = $("#cup");
   var barMark = $(".bar-mark"), railLinks = Array.prototype.slice.call(document.querySelectorAll("#rail a"));
   var secCup = $("#top"), secRing = $("#medium"), secStr = $("#palette"), secLay = $("#process");
-  var secGal = $("#work"), secNight = $("#artist"), sheetEl = $("#sheet");
+  var secGal = $("#work"), secClose = $("#closer"), secHome = $("#home"), secNight = $("#artist"), sheetEl = $("#sheet");
   var hero = $("#hero"), line1 = $("#cup-line-1"), line2 = $("#cup-line-2"), pencil = $("#pencil");
   var track = $("#track"), gHead = $("#g-head");
-  var SECTIONS = [secCup, secRing, secStr, secLay, secGal, secNight, sheetEl];
+  var SECTIONS = [secCup, secRing, secStr, secLay, secGal, secClose, secHome, secNight, sheetEl];
+  var feature = S.work(S.feature);
 
   /* ---------- content from js/studio.js ---------- */
 
@@ -60,6 +62,8 @@
     return li;
   });
 
+  $("#feature-name").textContent = feature.title;
+  $("#feature-done").textContent = feature.title + ", finished";
   S.bio.forEach(function (t) { $("#bio").appendChild(el("p", null, t)); });
 
   S.fyi.forEach(function (f) {
@@ -81,7 +85,7 @@
   var picker = $("#c-piece");
   picker.appendChild(el("option", null, "Not sure yet, or a general question"));
   S.series.forEach(function (se) {
-    var ws = S.hung().filter(function (w) { return w.series === se.id; });
+    var ws = S.inSeries(se.id);
     if (!ws.length) return;
     var g = el("optgroup");
     g.label = se.title;
@@ -103,52 +107,38 @@
 
   /* ---------- the gallery ---------- */
 
-  // The wall: the bean study that was just painted, then each series
-  // behind its own wall text.
-  var live = {
-    live: true,
-    slug: "scroll-study",
-    title: "Scroll Study",
-    medium: "Painted by this page as you scrolled",
-    blurb: "A quick demonstration of how a coffee painting is built, painted live by this website. It is not one of Hannah’s pieces."
-  };
-  var frames = [], hangItems = [];
+  // The wall: each series behind its own wall text. The painting that was
+  // just built on the paper is hung first, in the middle of the screen.
+  var frames = [], hangItems = [], featureFrame = null;
 
   function makeFrame(w) {
-    var fig = el("figure", "frame mount-" + (w.live ? "art" : w.mount));
+    var fig = el("figure", "frame mount-" + w.mount);
     var btn = el("button", "frame-art");
     btn.type = "button";
     btn.setAttribute("aria-label", "View " + w.title);
     if (w.mount !== "panel" && w.mount !== "oval") {
       btn.innerHTML = '<svg class="frame-hang" viewBox="0 0 100 42" preserveAspectRatio="none" aria-hidden="true"><path d="M4 42 L50 2 L96 42"/></svg>';
     }
-    var mould = el("span", "frame-moulding"), mat = el("span", "frame-mat"), media;
-    if (w.live) {
-      media = el("canvas");
-      media.setAttribute("aria-hidden", "true");
-    } else {
-      media = el("img");
-      media.src = w.photo;
-      media.alt = w.title + ", " + w.medium.toLowerCase();
-      media.loading = "lazy";
-      media.decoding = "async";
-    }
+    var mould = el("span", "frame-moulding"), mat = el("span", "frame-mat"), media = el("img");
+    media.src = w.photo;
+    media.alt = w.title + ", " + w.medium.toLowerCase();
+    media.decoding = "async";
     mat.appendChild(media);
     mould.appendChild(mat);
     btn.appendChild(mould);
     var cap = el("figcaption", "placard");
     cap.appendChild(el("span", "pl-title", w.title));
-    cap.appendChild(el("span", "pl-meta", w.live ? "Demonstration · painted as you scrolled" : w.medium));
+    cap.appendChild(el("span", "pl-meta", w.medium));
     fig.appendChild(btn);
     fig.appendChild(cap);
     track.appendChild(fig);
-    var f = { w: w, fig: fig, art: btn, media: media, cssW: 0, cssH: 0, a: 0, v: 0, moving: false };
-    btn.addEventListener("click", function () { openViewer(f); });
+    var f = { w: w, fig: fig, art: btn, media: media, cssW: 0, cssH: 0, a: 0, v: 0, moving: false, x0: 0, dev: -1 };
+    btn.addEventListener("click", function () { openViewer(w, 0); });
     frames.push(f);
+    if (w === feature) featureFrame = f;
     return f;
   }
 
-  makeFrame(live);
   $("#g-note").textContent = S.total() + " original pieces, each painted by hand with coffee. Tap a painting to see it up close.";
   S.series.forEach(function (se) {
     var ws = S.inSeries(se.id), note = S.toCome(se);
@@ -159,13 +149,16 @@
     if (note) text.appendChild(el("p", "wt-note", note));
     track.appendChild(text);
     hangItems.push(text);
-    ws.forEach(function (w) { hangItems.push(makeFrame(w).fig); });
+    ws.forEach(function (w) {
+      var f = makeFrame(w);
+      if (f !== featureFrame) hangItems.push(f.fig);
+    });
   });
 
   /* ---------- measuring ---------- */
 
   var vw = 0, vh = 0, W = 0, H = 0, stageScale = 1, R0 = 2, R1 = 0.28, ringR = 0;
-  var hangLen = 0, trackLen = 0, stepCentres = [], windows = {};
+  var hangLen = 0, trackLen = 0, trackShift = 0, stepCentres = [];
   var TRAVEL = 1.6;  // horizontal pixels travelled per pixel of scroll along the wall
 
   function measure() {
@@ -184,24 +177,22 @@
   function layoutGallery() {
     var fh = vw < 700 ? clamp(vh * 0.34, 150, 320) : clamp(vh * 0.4, 170, 480);
     frames.forEach(function (f) {
-      var ar = f.w.live ? vw / vh : f.w.ratio, h = fh * (f.w.mount === "art" ? 0.86 : 1), w = h * ar;
+      var ar = f.w.ratio, h = fh * (f.w.mount === "art" ? 0.86 : 1), w = h * ar;
       if (w > vw * 0.74) { w = vw * 0.74; h = w / ar; }
       f.cssW = w;
       f.cssH = h;
       f.media.style.width = w.toFixed(1) + "px";
       f.media.style.height = h.toFixed(1) + "px";
-      if (f.media.tagName === "CANVAS") {
-        var k = Math.min(window.devicePixelRatio || 1, 2), nw = Math.round(w * k), nh = Math.round(h * k);
-        if (f.media.width !== nw || f.media.height !== nh) {
-          f.media.width = nw;
-          f.media.height = nh;
-          f.painted = false;
-        }
-      }
     });
-    track.style.paddingLeft = Math.max(16, (vw - frames[0].fig.offsetWidth) / 2).toFixed(1) + "px";
+    // centre the feature painting; its wall text sits to its left
+    track.style.paddingLeft = "0px";
+    // (on a narrow screen that pushes the wall text off to the left)
+    var ff = featureFrame.fig, pad = vw / 2 - (ff.offsetLeft + ff.offsetWidth / 2);
+    track.style.paddingLeft = Math.max(16, pad).toFixed(1) + "px";
     track.style.paddingRight = Math.max(24, vw * 0.24).toFixed(1) + "px";
-    trackLen = Math.max(0, track.scrollWidth - vw);
+    trackShift = Math.min(0, pad - 16);
+    frames.forEach(function (f) { f.x0 = f.fig.offsetLeft + f.fig.offsetWidth / 2; });
+    trackLen = Math.max(0, track.scrollWidth - vw + trackShift);
     hangLen = vh * 1.1;
     secGal.style.height = Math.round(vh + hangLen + trackLen / TRAVEL + vh * 0.2) + "px";
   }
@@ -217,16 +208,14 @@
       var r = e.getBoundingClientRect();
       return (r.top + y + r.height / 2 - secLay._top) / secLay._h;
     });
-    // Each note on the process paints its layers while it rises to the
-    // middle of the screen.
-    windows = {};
-    S.process.forEach(function (p, i) {
-      var f = stepCentres[i], n = p.layers.length, span = 0.14;
-      p.layers.forEach(function (name, k) {
-        var a = f - 0.13 + k * span / n;
-        windows[name] = [a, a + span / n + 0.04];
-      });
-    });
+  }
+
+  // Each note on the process brings the painting through one stage while it
+  // rises to the middle of the screen.
+  function buildAt(pc) {
+    var u = 0;
+    for (var i = 0; i < stepCentres.length; i++) u += clamp((pc - (stepCentres[i] - 0.15)) / 0.15, 0, 1);
+    return u;
   }
 
   function pinP(e, y) { return clamp((y - e._top) / Math.max(1, e._h - vh), 0, 1); }
@@ -305,72 +294,43 @@
     c.globalCompositeOperation = "source-over";
   }
 
-  /* ---------- the bean study ---------- */
+  /* ---------- the painting ---------- */
 
-  var DEPTH = {};
-  var land = { paper: null, layers: [], names: [], token: 0, done: 0 }, landKey = "";
+  // Hannah's painting is rebuilt on the paper as the process notes scroll by,
+  // then shrinks into its frame on the wall. One WebGL canvas covers the
+  // screen and draws the painting inside a rectangle that moves.
+  var dev = new Develop(devC, { maxScale: 1.25 });
+  if (dev.ok) dev.load(feature.photo);
+  devStill.src = feature.photo;
+  var devOn = false;
 
-  function buildLand() {
-    var token = ++land.token, w = W, h = H;
-    landC.width = w;
-    landC.height = h;
-    land.paper = B.sheet(w, h);
-    B.paper(land.paper.getContext("2d"), w, h, { grainScale: stageScale });
-    var plan = B.plan("beans", w, h, LAND_SEED);
-    land.names = plan.map(function (p) { return p.name; });
-    land.layers = plan.map(function () { return null; });
-    land.done = 0;
-    landKey = "";
-    plan.forEach(function (L, i) {
-      B.later(function () {
-        if (token !== land.token) return;
-        land.layers[i] = B.paintLayer(L, i, w, h, LAND_SEED);
-        land.done++;
-        landKey = "";
-      });
-    });
+  // k: 0 as the process section comes onto the screen, 1 once it fills it
+  function processRect(k) {
+    var mw = vw < 700 ? vw - 28 : Math.min(vw * 0.74, 1160), mh = vh * (vw < 700 ? 0.62 : 0.72);
+    var w = mw, h = w / feature.ratio;
+    if (h > mh) { h = mh; w = h * feature.ratio; }
+    var rise = (1 - ease(k)) * vh * 0.16;
+    // on a phone the painting sits under the bar, clear of the notes below
+    var top = vw < 700 ? Math.max(72, vh * 0.1) : (vh - h) / 2 + vh * 0.02;
+    return [(vw - w) / 2, top + rise, w, h];
   }
 
-  function drawLand(pc) {
-    if (!land.paper) return false;
-    var pcc = clamp(pc, 0, 1), key = pcc.toFixed(3), state = [];
-    for (var i = 0; i < land.names.length; i++) {
-      var win = windows[land.names[i]], t = 1, wet = 0;
-      if (win) {
-        t = smooth(win[0], win[1], pc);
-        wet = t > 0 ? 1 - smooth(win[1], win[1] + 0.05, pc) : 0;
-      }
-      state.push({ t: t, wet: wet });
-      key += "," + (land.layers[i] ? t.toFixed(3) + ":" + wet.toFixed(2) : "x");
+  function showPainting(rect, build, alpha, shadow) {
+    if (dev.ok) {
+      dev.draw({ a: feature.photo, rect: rect, build: build, alpha: alpha, shadow: shadow, seed: 4.2 });
+      setO(devC, 1);
+      setO(devStill, 0);
+    } else {
+      // without WebGL the finished painting simply fades in
+      devStill.style.transform = "translate3d(" + rect[0].toFixed(1) + "px," + rect[1].toFixed(1) + "px,0)";
+      devStill.style.width = rect[2].toFixed(1) + "px";
+      devStill.style.height = rect[3].toFixed(1) + "px";
+      setO(devStill, alpha * clamp(build / 4, 0, 1));
     }
-    if (key === landKey) return false;
-    landKey = key;
-    var c = landC.getContext("2d");
-    c.globalCompositeOperation = "source-over";
-    c.globalAlpha = 1;
-    c.drawImage(land.paper, 0, 0);
-    c.globalCompositeOperation = "multiply";
-    for (i = 0; i < land.names.length; i++) {
-      var L = land.layers[i], s = state[i];
-      if (!L || s.t <= 0) continue;
-      var dy = (0.5 - pcc) * H * 0.028 * (DEPTH[land.names[i]] || 0.5);
-      // Wet coffee looks darker than it dries; each fresh layer starts deep
-      // and settles as you scroll on.
-      for (var k = 0; k < (s.wet > 0.01 ? 2 : 1); k++) {
-        c.globalAlpha = k ? s.wet * 0.45 : 1;
-        if (s.t >= 1) c.drawImage(L, 0, dy);
-        else B.sweep(c, L, s.t, 300 + i, { dir: i % 2 ? -1 : 1, y: dy });
-      }
-    }
-    c.globalAlpha = 1;
-    c.globalCompositeOperation = "source-over";
-    return true;
   }
-
-  function copyLive() {
-    var f = frames[0];
-    if (f.media.tagName !== "CANVAS" || !land.paper) return;
-    f.media.getContext("2d").drawImage(landC, 0, 0, f.media.width, f.media.height);
+  function hidePainting() {
+    setO(devC, 0);
+    setO(devStill, 0);
   }
 
   /* ---------- the footer sheet ---------- */
@@ -467,19 +427,29 @@
   /* ---------- the gallery ---------- */
 
   var lastTx = 0;
-  function updateGallery(y) {
+  function updateGallery(y, pcL) {
     var d = y - secGal._top;
     var e = clamp(d / (hangLen * 0.78), 0, 1), ee = ease(e);
     var reveal = smooth(0.72, 1, d / hangLen);
-    setO(wall, smooth(0.1, 0.8, e));
-    var f0 = frames[0];
-    if (d > 0 && e < 1) {
-      var T = f0.media.getBoundingClientRect();
-      landC.style.transform = "translate3d(" + (T.left * ee).toFixed(2) + "px," + (T.top * ee).toFixed(2) + "px,0) scale(" +
-        lerp(1, T.width / vw, ee).toFixed(5) + "," + lerp(1, T.height / vh, ee).toFixed(5) + ")";
-      landC.style.boxShadow = "0 " + (40 * ee).toFixed(0) + "px " + (80 * ee).toFixed(0) + "px rgba(0,0,0," + (0.5 * ee).toFixed(2) + ")";
-    } else if (d <= 0) {
-      if (landC.style.transform) { landC.style.transform = ""; landC.style.boxShadow = ""; }
+    // the room darkens from the edges in, like a spotlight closing on the painting
+    setO(wall, d > 0 ? 1 : 0);
+    var hole = d > 0 ? lerp(105, -22, ease(smooth(0, 0.85, e))) : 105;
+    if (wall._hole !== hole) { wall.style.setProperty("--hole", hole.toFixed(2) + "%"); wall._hole = hole; }
+    var f0 = featureFrame;
+    // the painting on the paper, then on its way into the frame
+    var k = smooth(0.3, 0.95, (y + vh - secLay._top) / vh), on = smooth(0, 0.35, k);
+    if (on > 0 && e < 1) {
+      var R = processRect(k);
+      if (d > 0) {
+        var T = f0.media.getBoundingClientRect();
+        R = [lerp(R[0], T.left, ee), lerp(R[1], T.top, ee), lerp(R[2], T.width, ee), lerp(R[3], T.height, ee)];
+      }
+      var line = vw < 700 ? (y + vh * 0.8 - secLay._top) / secLay._h : pcL;
+      showPainting(R, d > 0 ? 4 : buildAt(line), on, 1 - ee);
+      devOn = true;
+    } else if (devOn) {
+      hidePainting();
+      devOn = false;
     }
     f0.media.style.visibility = e >= 1 ? "visible" : "hidden";
     setO(f0.fig, smooth(0.55, 0.95, e));
@@ -488,9 +458,115 @@
       hangItems[i].style.transform = reveal < 1 ? "translate3d(" + ((1 - reveal) * 90).toFixed(1) + "px,0,0)" : "";
     }
     setO(gHead, reveal);
-    var tx = -clamp((d - hangLen) * TRAVEL / Math.max(1, trackLen), 0, 1) * trackLen;
+    var tx = trackShift - clamp((d - hangLen) * TRAVEL / Math.max(1, trackLen), 0, 1) * trackLen;
     if (tx !== lastTx) { track.style.transform = "translate3d(" + tx.toFixed(1) + "px,0,0)"; lastTx = tx; }
+    developFrames(tx);
     return e;
+  }
+
+  // Photos on the wall start pale and soft, like a wash that has just gone
+  // down, and dry to their true tones as they slide towards the middle.
+  function developFrames(tx) {
+    for (var i = 0; i < frames.length; i++) {
+      var f = frames[i];
+      if (f === featureFrame) continue;
+      var x = f.x0 + tx, dv = reduce ? 1 : Math.round((1 - smooth(vw * 0.5, vw * 1.05, x)) * 40) / 40;
+      if (dv === f.dev) continue;
+      f.dev = dv;
+      var w = 1 - dv;
+      f.media.style.filter = dv >= 1 ? "" : "brightness(" + (1 + 0.42 * w).toFixed(3) + ") contrast(" + (1 - 0.5 * w).toFixed(3) +
+        ") saturate(" + (1 - 0.45 * w).toFixed(3) + ") blur(" + (2.6 * w).toFixed(2) + "px)";
+    }
+  }
+
+  /* ---------- up close ---------- */
+
+  // Hannah's close-ups fill the screen. Each one drifts in to look closer
+  // and back out again, then the next spreads over it like spilled coffee.
+  var closeShots = ["a-pleasant-pause", "but-first-tabby", "a-classic-breakfast", "fresh-baked"].map(S.work).filter(function (w) { return w && w.detailPhoto; });
+  var closeC = $("#close-dev"), closeDev = new Develop(closeC, { maxScale: 1.25 });
+  var closeHead = $("#close-head"), closeCaps = [], closeDots = [], closeStills = [];
+  var FROMS = [[0.12, 0.85], [0.88, 0.2], [0.25, 0.15], [0.82, 0.88]];
+  var DRIFT = [[0.05, -0.03], [-0.06, 0.02], [0.04, 0.04], [-0.04, -0.03]];
+  $("#close-note").textContent = S.care.note;
+  closeShots.forEach(function (w, i) {
+    if (closeDev.ok) closeDev.load(w.detailPhoto);
+    else {
+      var im = el("img");
+      im.src = w.detailPhoto;
+      im.alt = "";
+      $("#close-stills").appendChild(im);
+      closeStills.push(im);
+    }
+    var se = S.seriesOf(w.series), li = el("li", "close-cap");
+    li.appendChild(el("span", "cc-n", (i < 9 ? "0" : "") + (i + 1) + " / " + (closeShots.length < 10 ? "0" : "") + closeShots.length));
+    li.appendChild(el("span", "cc-t", w.title));
+    li.appendChild(el("span", "cc-s", (se ? se.title + " · " : "") + "detail"));
+    $("#close-caps").appendChild(li);
+    closeCaps.push(li);
+    var dot = el("li");
+    $("#close-dots").appendChild(dot);
+    closeDots.push(dot);
+  });
+
+  function updateClose(y) {
+    if (y + vh < secClose._top || y > secClose._top + secClose._h) return;
+    var n = closeShots.length, p = pinP(secClose, y) * n, i = Math.min(n - 1, Math.floor(p)), f = p - i;
+    var breathe = Math.sin(Math.PI * clamp(f, 0, 1));
+    var zoom = 1.04 + 0.22 * breathe, dr = DRIFT[i % DRIFT.length];
+    var mix = i < n - 1 ? smooth(0.76, 1, f) : 0;
+    if (closeDev.ok) {
+      closeDev.draw({
+        a: closeShots[i].detailPhoto, b: i < n - 1 ? closeShots[i + 1].detailPhoto : null, mix: mix,
+        rect: [0, 0, vw, vh], zoom: zoom, pan: [dr[0] * breathe, dr[1] * breathe], from: FROMS[i % FROMS.length], seed: 2.3 + i
+      });
+    } else {
+      closeStills.forEach(function (im, k) { setO(im, k === i ? 1 - mix : k === i + 1 ? mix : 0); });
+    }
+    setO(closeHead, 1 - smooth(0.3, 0.55, p));
+    closeCaps.forEach(function (c, k) {
+      var o = smooth(k + (k ? 0.02 : 0.5), k + (k ? 0.14 : 0.64), p) * (k < n - 1 ? 1 - smooth(k + 0.8, k + 0.92, p) : 1);
+      setO(c, o);
+    });
+    closeDots.forEach(function (d, k) { d.classList.toggle("on", k === Math.round(clamp(p - 0.1, 0, n - 1))); });
+  }
+
+  /* ---------- at home ---------- */
+
+  // Kitchen photos drift past at different depths in morning light.
+  var homeWorks = S.hung().filter(function (w) { return w.homePhoto; });
+  // left %, top % of the section, width in vw, turn, depth
+  var SPOTS = [[4, 3, 22, -3, 0.9], [71, 1, 24, 2.5, 0.55], [76, 31, 18, -2, 1.35], [3, 35, 19, 2.6, 1.45], [38, 3, 15, 1.4, 1.7],
+    [62, 57, 23, 1.8, 1.0], [5, 67, 22, -2.4, 0.6], [34, 80, 19, -1.2, 1.25], [79, 79, 16, -3, 1.55], [18, 52, 14, 2.2, 1.8]];
+  var homeEls = homeWorks.slice(0, SPOTS.length).map(function (w, i) {
+    var b = el("button", "hp"), im = el("img"), sp = SPOTS[i];
+    b.type = "button";
+    b.setAttribute("aria-label", w.title + " at home");
+    im.src = w.homePhoto;
+    im.alt = "";
+    im.loading = "lazy";
+    im.decoding = "async";
+    b.appendChild(im);
+    b.style.left = sp[0] + "%";
+    b.style.top = sp[1] + "%";
+    b.addEventListener("click", function () { openViewer(w, -1); });
+    $("#home-photos").appendChild(b);
+    return { b: b, sp: sp, key: "" };
+  });
+
+  function layoutHome() {
+    var k = vw < 700 ? 2 : 1.22;
+    homeEls.forEach(function (h) { h.b.style.width = Math.min(h.sp[2] * k, 46) + "vw"; });
+  }
+
+  function updateHome(y) {
+    if (y + vh < secHome._top || y > secHome._top + secHome._h) return;
+    var c = centreP(secHome, y) - 0.5;
+    homeEls.forEach(function (h) {
+      var z = h.sp[4], dy = -c * z * vh * 0.7 + mouse.y * z * 8, dx = mouse.x * z * -10;
+      var tf = "translate3d(" + dx.toFixed(1) + "px," + dy.toFixed(1) + "px,0) rotate(" + (h.sp[3] + c * z * 3).toFixed(2) + "deg)";
+      if (tf !== h.key) { h.b.style.transform = tf; h.key = tf; }
+    });
   }
 
   var lastY = window.scrollY, vel = 0;
@@ -515,13 +591,15 @@
 
   /* ---------- the frame loop ---------- */
 
-  var currentWorld = "cup", liveStamp = -1;
+  var currentWorld = "cup";
   function worldAt(line) {
     if (line < secRing._top) return "cup";
     if (line < secStr._top) return "ring";
     if (line < secLay._top) return "strength";
     if (line < secGal._top) return "layers";
-    if (line < secNight._top) return "gallery";
+    if (line < secClose._top) return "gallery";
+    if (line < secHome._top) return "closer";
+    if (line < secNight._top) return "home";
     if (line < sheetEl._top) return "night";
     return "sheet";
   }
@@ -546,20 +624,13 @@
     }
 
     var pcL = centreP(secLay, y);
-    var e = updateGallery(y);
-    var landOn = smooth(-0.07, 0.0, pcL) * (e >= 1 ? 0 : 1);
-    setO(landC, landOn);
-    // Once the wall is reached the finished landscape also hangs in the
-    // first frame, however the reader got here.
-    var redrawn = (landOn > 0 || y >= secGal._top) && drawLand(pcL);
-    if (y >= secGal._top && (redrawn || liveStamp !== land.token * 100 + land.done)) {
-      copyLive();
-      liveStamp = land.token * 100 + land.done;
-    }
+    var e = updateGallery(y, pcL);
+    updateClose(y);
+    updateHome(y);
     if (!sheetPainted && y + vh * 2 > sheetEl._top) paintSheet();
     if (y + vh > secNight._top && y < secNight._top + secNight._h) drawSteam(now);
 
-    var inGallery = y >= secGal._top - vh && y < secNight._top;
+    var inGallery = y >= secGal._top - vh && y < secClose._top;
     sway(y, inGallery && e >= 1);
 
     var world = worldAt(y + vh / 2);
@@ -570,7 +641,7 @@
     var top = worldAt(y + 40), tone = "light";
     if (top === "cup") tone = cupDark ? "dark" : "light";
     else if (top === "gallery") tone = e > 0.35 ? "dark" : "light";
-    else if (top === "night") tone = "dark";
+    else if (top === "night" || top === "closer") tone = "dark";
     if (doc.getAttribute("data-tone") !== tone) doc.setAttribute("data-tone", tone);
     if (doc.getAttribute("data-top") !== top) doc.setAttribute("data-top", top);
   }
@@ -605,55 +676,43 @@
   /* ---------- the viewer ---------- */
 
   var viewer = $("#viewer"), viewing = null;
-  function openViewer(f) {
-    var w = f.w, art = $("#v-art"), thumbs = $("#v-thumbs");
+  // start: which shot to show first; -1 is the last one (at home)
+  function openViewer(w, start) {
+    var art = $("#v-art"), thumbs = $("#v-thumbs");
     viewing = w;
-    var se = w.live ? null : S.seriesOf(w.series);
+    var se = S.seriesOf(w.series);
     $("#v-title").textContent = w.title;
-    $("#v-meta").textContent = w.live ? "Demonstration" : (se ? se.title : "Original");
-    $("#v-blurb").textContent = w.live ? w.blurb : w.medium + ". An original, painted by hand with coffee.";
-    $("#v-note").textContent = w.live ? "" : "Sizing is included with each piece. Frames are for staging and are not included, and pricing does not include shipping.";
-    $("#v-ask").hidden = !!w.live;
+    $("#v-meta").textContent = se ? se.title : "Original";
+    $("#v-blurb").textContent = w.medium + ". An original, painted by hand with coffee.";
+    $("#v-note").textContent = "Sizing is included with each piece. Frames are for staging and are not included, and pricing does not include shipping.";
     art.innerHTML = "";
     thumbs.innerHTML = "";
-    art.className = "v-art mount-" + (w.live ? "art" : w.mount);
-    if (w.live) {
-      var c = el("canvas"), ar = vw / vh, k = Math.min(window.devicePixelRatio || 1, 1.5);
-      var cw = Math.min(vw * 0.6, 1100) * k;
-      if (cw / ar > vh * 0.74 * k) cw = vh * 0.74 * k * ar;
-      c.width = Math.round(cw);
-      c.height = Math.round(cw / ar);
-      c.setAttribute("role", "img");
-      c.setAttribute("aria-label", "The bean study painted on this page");
-      c.getContext("2d").drawImage(landC, 0, 0, c.width, c.height);
-      art.appendChild(c);
-    } else {
-      var shots = [[w.photo, "The piece"]];
-      if (w.detailPhoto) shots.push([w.detailPhoto, "Up close"]);
-      if (w.homePhoto) shots.push([w.homePhoto, "At home"]);
-      var big = el("img");
-      big.alt = w.title;
-      art.appendChild(big);
-      function show(i) {
-        big.src = shots[i][0];
-        big.alt = w.title + ", " + shots[i][1].toLowerCase();
-        art.classList.toggle("is-photo", i > 0);
-        Array.prototype.forEach.call(thumbs.children, function (b, j) { b.setAttribute("aria-pressed", j === i ? "true" : "false"); });
-      }
-      if (shots.length > 1) {
-        shots.forEach(function (sh, i) {
-          var b = el("button"), t = el("img");
-          b.type = "button";
-          t.src = sh[0];
-          t.alt = "";
-          b.appendChild(t);
-          b.appendChild(el("span", null, sh[1]));
-          b.addEventListener("click", function () { show(i); });
-          thumbs.appendChild(b);
-        });
-      }
-      show(0);
+    art.className = "v-art mount-" + w.mount;
+    var shots = [[w.photo, "The piece"]];
+    if (w.detailPhoto) shots.push([w.detailPhoto, "Up close"]);
+    if (w.homePhoto) shots.push([w.homePhoto, "At home"]);
+    var big = el("img");
+    big.alt = w.title;
+    art.appendChild(big);
+    var show = function (i) {
+      big.src = shots[i][0];
+      big.alt = w.title + ", " + shots[i][1].toLowerCase();
+      art.classList.toggle("is-photo", i > 0);
+      Array.prototype.forEach.call(thumbs.children, function (b, j) { b.setAttribute("aria-pressed", j === i ? "true" : "false"); });
+    };
+    if (shots.length > 1) {
+      shots.forEach(function (sh, i) {
+        var b = el("button"), t = el("img");
+        b.type = "button";
+        t.src = sh[0];
+        t.alt = "";
+        b.appendChild(t);
+        b.appendChild(el("span", null, sh[1]));
+        b.addEventListener("click", function () { show(i); });
+        thumbs.appendChild(b);
+      });
     }
+    show(start < 0 ? shots.length - 1 : start || 0);
     if (viewer.showModal) viewer.showModal(); else viewer.setAttribute("open", "");
   }
   function closeViewer() {
@@ -662,7 +721,7 @@
   $("#v-close").addEventListener("click", closeViewer);
   viewer.addEventListener("click", function (ev) { if (ev.target === viewer) closeViewer(); });
   $("#v-ask").addEventListener("click", function () {
-    if (viewing && !viewing.live) picker.value = viewing.title;
+    if (viewing) picker.value = viewing.title;
     closeViewer();
   });
 
@@ -722,18 +781,18 @@
   function relayout(rebuild) {
     measure();
     crema.resize();
+    dev.resize(vw, vh);
+    closeDev.resize(vw, vh);
     if (rebuild || Math.abs(vw - lastW) > 40 || Math.abs(vh - lastH) > lastH * 0.18) {
       lastW = vw;
       lastH = vh;
       buildPaper();
-      buildLand();
       sheetPainted = false;
     }
     layoutGallery();
+    layoutHome();
     cache();
-    landKey = "";
     paperKey = "";
-    liveStamp = -1;
   }
   window.addEventListener("resize", function () {
     clearTimeout(resizeT);
@@ -743,10 +802,12 @@
   measure();
   lastW = vw;
   lastH = vh;
+  dev.resize(vw, vh);
+  closeDev.resize(vw, vh);
   layoutGallery();
+  layoutHome();
   cache();
   buildPaper();
-  setTimeout(buildLand, 250);
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(function () { layoutGallery(); cache(); sheetPainted = false; });
   }

@@ -6,7 +6,7 @@ Three pages, one static site with no build step and no dependencies:
 
 | Page | File | What it is |
 | --- | --- | --- |
-| Site | `index.html` | The scroll. A cup of coffee pulls back and lifts, leaves its ring, the ring blooms into the palette, a bean study paints itself one dry layer at a time and is hung on the gallery wall beside Hannah's six series, then the night café tells her story and takes enquiries. |
+| Site | `index.html` | The scroll. A cup of coffee pulls back and lifts, leaves its ring, and the ring blooms into the palette. Hannah's *Bean Up For Hours* then comes back together on the paper, wash by wash, and is hung on the gallery wall with her six series. Her close-ups fill the screen, her kitchen photos drift by in morning light, and the night café tells her story and takes enquiries. |
 | Deck | `deck.html` | A 13-slide 16:9 deck: statement, the artist, the medium, the process, the six series on the gallery wall, close-ups, and what to know about collecting. Arrow keys, space, tap or swipe to move; `N` for speaker notes; `F` for full screen; link a slide as `deck#s5`. |
 | Preread | `preread.html` | A five-minute read to send before a meeting. Follows light and dark mode, prints cleanly. |
 
@@ -46,25 +46,28 @@ Houses 1). Each series' `count` in `js/studio.js` is its full size, and
 every page notes how many pieces in a series are still waiting on a
 photo, so the totals stay right while photos come in.
 
-Photographed so far: 17. Still to add:
+Photographed so far: 18. Still to add: three pieces that are not in the
+Drive, one each in Cool Beans, Golden Hour and Coffee Houses.
 
-- "A Pleasant Pause": its folder in Hannah's Drive has three photos, but
-  all are 8 to 13 MB, too large for the Drive connector used to fetch
-  them. Its series is not known yet.
-- Three more pieces that are not in the Drive at all. Together with A
-  Pleasant Pause they fill one open place each in Cool Beans, Pairs Well
-  With, Golden Hour and Coffee Houses.
+Series membership was matched from the paintings themselves (A Pleasant
+Pause, macarons beside a cup, is in Pairs Well With); check it against
+Hannah's list.
 
-Series membership was matched from the paintings themselves; check it
-against Hannah's list.
+## How the animation works
 
-## How the stand-in paintings are made
+- `js/develop.js` is a small WebGL renderer for Hannah's photos. In *build*
+  mode it puts a finished painting back on the paper in four stages, light
+  to dark: every pixel gets washes until it reaches its darkness in the
+  photo, each wash sweeps in with a ragged wet edge and a faint rim, and
+  the detail only sharpens in the last stage. The site scrolls through it,
+  and the deck and preread show the four stages. Which painting is set by
+  `feature` in `js/studio.js`. In *bleed* mode one close-up spreads over
+  another like spilled coffee.
+- `js/brew.js` paints the ring stain, the palette swatches and the painted
+  wordmarks, imitating coffee on cotton paper.
+- `js/crema.js` is the live WebGL cup of coffee.
 
-The ring stain, the palette and the bean study are painted live in the
-browser by `js/brew.js`, a small generative engine that imitates coffee on
-cotton paper. The cup of coffee is live WebGL in `js/crema.js`. The bean
-study is labelled on the page as a demonstration, not one of Hannah's
-pieces.
+Without WebGL, the pages fall back to Hannah's photos as they are.
 
 ## Running it
 

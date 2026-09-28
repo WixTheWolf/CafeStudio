@@ -40,11 +40,23 @@ Each work in `js/studio.js` names its `series` and its `mount`:
 `panel` or `oval` (painted on wood). A work with `photo: null` stays off
 the gallery until a photo is added.
 
-Still to add: "A Pleasant Pause" (its photos in Drive were too large to
-bring in), and the pieces the Drive folders do not include yet (one each
-in Cool Beans, Pairs Well With, Golden Hour and Coffee Houses). Series
-membership was matched from the paintings themselves; check it against
-Hannah's list.
+The collection is 21 pieces across six series (Cool Beans 7, Pairs Well
+With 5, My Coach and a Coffee 3, Golden Hour 3, Coffee Makers 2, Coffee
+Houses 1). Each series' `count` in `js/studio.js` is its full size, and
+every page notes how many pieces in a series are still waiting on a
+photo, so the totals stay right while photos come in.
+
+Photographed so far: 17. Still to add:
+
+- "A Pleasant Pause": its folder in Hannah's Drive has three photos, but
+  all are 8 to 13 MB, too large for the Drive connector used to fetch
+  them. Its series is not known yet.
+- Three more pieces that are not in the Drive at all. Together with A
+  Pleasant Pause they fill one open place each in Cool Beans, Pairs Well
+  With, Golden Hour and Coffee Houses.
+
+Series membership was matched from the paintings themselves; check it
+against Hannah's list.
 
 ## How the stand-in paintings are made
 

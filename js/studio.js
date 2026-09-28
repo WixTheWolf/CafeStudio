@@ -60,7 +60,9 @@ window.STUDIO = {
     { title: "Details last", text: "The crease down each bean and the darkest accents go in with the strongest coffee, and highlights are lifted back out.", layers: ["crease", "light", "details"] }
   ],
 
-  // Series, in the order they hang. `count` is the size of the whole series.
+  // Series, in the order they hang. `count` is the size of the whole series,
+  // including pieces that have no photo yet; the pages say how many are
+  // still to come.
   series: [
     { id: "cool-beans", title: "Cool Beans", count: 7, blurb: "Coffee beans, up close." },
     { id: "pairs-well-with", title: "Pairs Well With", count: 5, blurb: "The treats that belong next to a cup." },
@@ -110,4 +112,14 @@ window.STUDIO = {
   });
   S.seriesOf = function (id) { return S.series.filter(function (s) { return s.id === id; })[0]; };
   S.hung = function () { return S.works.filter(function (w) { return w.photo; }); };
+  S.inSeries = function (id) { return S.hung().filter(function (w) { return w.series === id; }); };
+  S.pieces = function (n) { return n + (n === 1 ? " piece" : " pieces"); };
+  S.total = function () { return S.series.reduce(function (t, se) { return t + se.count; }, 0); };
+  // What a series is still missing photos of, or "" when every piece is shown.
+  S.toCome = function (se) {
+    var shown = S.inSeries(se.id).length, left = se.count - shown;
+    if (left <= 0) return "";
+    if (!shown) return se.count === 1 ? "Photo coming soon" : "Photos coming soon";
+    return "Plus " + left + " more, photo" + (left === 1 ? "" : "s") + " coming soon";
+  };
 })(window.STUDIO);

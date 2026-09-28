@@ -24,8 +24,7 @@
   function lerp(a, b, t) { return a + (b - a) * t; }
   function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
   function work(slug) { return S.works.filter(function (w) { return w.slug === slug; })[0]; }
-  function inSeries(id) { return S.hung().filter(function (w) { return w.series === id; }); }
-  function pieces(n) { return n + (n === 1 ? " piece" : " pieces"); }
+  var inSeries = S.inSeries, pieces = S.pieces;
 
   var deck = $("#deck"), stage = $("#stage"), edge = $("#edge");
   var slides = all(".slide");
@@ -79,6 +78,7 @@
     if (w) box.appendChild(frameFor(w, w.ratio < 1 ? 600 : 470));
   });
 
+  $("#d-collection").textContent = "The collection · " + pieces(S.total());
   S.series.forEach(function (se) {
     var li = el("li"), ws = inSeries(se.id), pic = el("div", "tile-pic");
     if (ws.length) {
@@ -89,21 +89,25 @@
       pic.appendChild(img);
     } else {
       pic.classList.add("tile-empty");
-      pic.appendChild(el("span", null, "Photos coming"));
+      pic.appendChild(el("span", null, S.toCome(se)));
     }
     li.appendChild(pic);
     li.appendChild(el("h3", null, se.title));
-    li.appendChild(el("p", null, pieces(se.count)));
+    li.appendChild(el("p", null, pieces(se.count) + (ws.length && ws.length < se.count ? " · " + ws.length + " shown" : "")));
     $("#d-series").appendChild(li);
   });
 
   all(".s-wall").forEach(function (sl) {
     var ids = sl.getAttribute("data-series").split(","), works = [];
     ids.forEach(function (id) { works = works.concat(inSeries(id)); });
+    var count = ids.reduce(function (t, id) { return t + S.seriesOf(id).count; }, 0);
+    var shown = count > works.length ? ", " + works.length + " shown here" : "";
     if (ids.length === 1) {
       var se = S.seriesOf(ids[0]);
-      $(".eyebrow", sl).textContent = pieces(se.count) + " · " + se.blurb;
+      $(".eyebrow", sl).textContent = pieces(count) + shown + " · " + se.blurb;
       $("h2", sl).textContent = se.title;
+    } else {
+      $(".eyebrow", sl).textContent = "Two more series · " + pieces(count) + shown;
     }
     hang($(".hang", sl), works, { w: 1380, h: 590, max: works.length <= 3 ? 470 : 420 });
   });

@@ -149,13 +149,14 @@
   }
 
   makeFrame(live);
+  $("#g-note").textContent = S.total() + " original pieces, each painted by hand with coffee. Tap a painting to see it up close.";
   S.series.forEach(function (se) {
-    var ws = S.hung().filter(function (w) { return w.series === se.id; });
-    if (!ws.length) return;
+    var ws = S.inSeries(se.id), note = S.toCome(se);
     var text = el("div", "wall-text");
-    text.appendChild(el("p", "wt-count", se.count + (se.count === 1 ? " piece" : " pieces")));
+    text.appendChild(el("p", "wt-count", S.pieces(se.count)));
     text.appendChild(el("h3", null, se.title));
     text.appendChild(el("p", "wt-blurb", se.blurb));
+    if (note) text.appendChild(el("p", "wt-note", note));
     track.appendChild(text);
     hangItems.push(text);
     ws.forEach(function (w) { hangItems.push(makeFrame(w).fig); });

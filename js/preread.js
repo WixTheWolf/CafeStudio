@@ -25,6 +25,8 @@
   /* ---------- content ---------- */
 
   $("#p-series-list").textContent = listJoin(S.series.map(function (s) { return s.title; }));
+  $("#p-total").textContent = S.pieces(S.total());
+  $("#p-coll").textContent = "Six series, " + S.pieces(S.total());
 
   var plateNo = 1;
   function plate(w, cls) {
@@ -74,17 +76,16 @@
   });
 
   S.series.forEach(function (se) {
-    var block = el("div", "series-block"), ws = S.hung().filter(function (w) { return w.series === se.id; });
+    var block = el("div", "series-block"), ws = S.inSeries(se.id), note = S.toCome(se);
     block.appendChild(el("h3", null, se.title));
-    block.appendChild(el("p", "series-meta", se.count + (se.count === 1 ? " piece" : " pieces") + " · " + se.blurb));
+    block.appendChild(el("p", "series-meta", S.pieces(se.count) + " · " + se.blurb));
     if (ws.length) {
       var grid = el("div", "plates");
       ws.forEach(function (w) { if (w !== leadWork) grid.appendChild(plate(w, "plate-sm")); });
       if (grid.children.length) block.appendChild(grid);
       else block.appendChild(el("p", "aside", "Shown above as Plate 1."));
-    } else {
-      block.appendChild(el("p", "aside", "Photographs coming soon."));
     }
+    if (note) block.appendChild(el("p", "aside", note + "."));
     $("#p-collection").appendChild(block);
   });
 

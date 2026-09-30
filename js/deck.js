@@ -318,6 +318,7 @@
     show(n);
     to.classList.add("active");
     enter(to);
+    all("video").forEach(function (v) { if (!to.contains(v)) v.pause(); });
     from.style.zIndex = "2";
     to.style.zIndex = "3";
 
@@ -389,6 +390,7 @@
   document.addEventListener("keydown", function (ev) {
     if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
     var key = ev.key;
+    if (ev.target && ev.target.tagName === "VIDEO" && key === " ") return;
     if (key === "ArrowRight" || key === "PageDown" || (key === " " && !ev.shiftKey)) { ev.preventDefault(); next(); }
     else if (key === "ArrowLeft" || key === "PageUp" || (key === " " && ev.shiftKey)) { ev.preventDefault(); prev(); }
     else if (key === "Home") { ev.preventDefault(); go(0); }
@@ -401,7 +403,7 @@
   });
 
   deck.addEventListener("click", function (ev) {
-    if (ev.target.closest("button, a, .notes")) return;
+    if (ev.target.closest("button, a, video, .notes")) return;
     var r = stage.getBoundingClientRect();
     if (ev.clientX > r.left + r.width * 0.35) next(); else prev();
   });

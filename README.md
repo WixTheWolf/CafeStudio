@@ -69,6 +69,16 @@ Hannah's list.
 
 Without WebGL, the pages fall back to Hannah's photos as they are.
 
+## The film
+
+`media/cafe-studio-film.mp4` is a film of about a minute. It plays from the
+"Watch the film" button on the site (or `/#film`), on the deck's second
+slide, and from the preread's closing links. Hannah's paintings appear as
+she painted them: they are her photos, moved with a slow camera. The coffee
+footage, steam and window light around them were generated with
+Higgsfield. `film/SHOTS.md` lists every shot and clip, and `film/build.sh`
+rebuilds the film from them.
+
 ## Running it
 
 Open `index.html` through any static server, for example:

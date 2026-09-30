@@ -55,7 +55,10 @@
         <h1 class="hero-title">Cafe <span>Studio</span></h1>
         <div class="hero-foot">
           <p class="hero-lede">Coffee-themed art, painted with coffee. Scroll, and watch one of Hannah’s paintings come together.</p>
-          <p class="cue" aria-hidden="true"><span>Scroll</span><i></i></p>
+          <div class="hero-actions">
+            <button class="film-btn" id="film-btn" type="button"><span class="film-play" aria-hidden="true"></span>Watch the film <span class="film-len" id="film-len">1 min</span></button>
+            <p class="cue" aria-hidden="true"><span>Scroll</span><i></i></p>
+          </div>
         </div>
       </div>
       <p class="cup-line" id="cup-line-1">Every painting starts the same way.</p>
@@ -223,6 +226,14 @@
     <p class="fine"><span>© 2026 <span id="legal">Cafe Studio, LLC</span></span><span id="contact-line"></span></p>
   </div>
 </footer>
+
+<dialog class="film" id="film" aria-label="Cafe Studio, the film">
+  <video id="film-video" controls playsinline preload="none" poster="media/cafe-studio-film-poster.jpg">
+    <source src="media/cafe-studio-film.mp4" type="video/mp4">
+  </video>
+  <p class="film-credit">Hannah’s paintings, as she painted them. Coffee footage, steam and light generated with Higgsfield.</p>
+  <button class="film-close" id="film-close" type="button" aria-label="Close the film">Close</button>
+</dialog>
 
 <dialog class="viewer" id="viewer" aria-labelledby="v-title">
   <div class="v-inner">

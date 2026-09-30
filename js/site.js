@@ -725,6 +725,25 @@
     closeViewer();
   });
 
+  /* ---------- the film ---------- */
+
+  var film = $("#film"), filmVideo = $("#film-video");
+  function openFilm() {
+    if (film.showModal) film.showModal(); else film.setAttribute("open", "");
+    try { filmVideo.currentTime = 0; } catch (e) { /* not loaded yet */ }
+    var p = filmVideo.play();
+    if (p && p.catch) p.catch(function () { /* the controls are there to start it */ });
+  }
+  function closeFilm() {
+    filmVideo.pause();
+    if (film.close) film.close(); else film.removeAttribute("open");
+  }
+  $("#film-btn").addEventListener("click", openFilm);
+  $("#film-close").addEventListener("click", closeFilm);
+  film.addEventListener("click", function (ev) { if (ev.target === film) closeFilm(); });
+  film.addEventListener("close", function () { filmVideo.pause(); });
+  if (location.hash === "#film") setTimeout(openFilm, 400);
+
   /* ---------- the enquiry ---------- */
 
   var enquiry = "";

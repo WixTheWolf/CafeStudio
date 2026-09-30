@@ -6,7 +6,7 @@ Three pages, one static site with no build step and no dependencies:
 
 | Page | File | What it is |
 | --- | --- | --- |
-| Site | `index.html` | The scroll. A cup of coffee pulls back and lifts, leaves its ring, and the ring blooms into the palette. Hannah's *Bean Up For Hours* then comes back together on the paper, wash by wash, and is hung on the gallery wall with her six series. Her close-ups fill the screen, her kitchen photos drift by in morning light, and the night café tells her story and takes enquiries. |
+| Site | `index.html` | The scroll. It opens in the café as Hannah sees it: abstract macro loops of coffee (marbling oils, steam, light, a bloom on paper), each spreading over the last like a coffee stain, stirred by the pointer, until the last clears to the paper and leaves a ring. The ring blooms into the palette. Hannah's *Bean Up For Hours* then comes back together on the paper, wash by wash, and is hung on the gallery wall with her six series. Her close-ups fill the screen, her kitchen photos drift by in morning light, and the night café tells her story and takes enquiries. |
 | Deck | `deck.html` | A 16-slide 16:9 deck: the film, statement, the artist, the medium, the process, the six series on the gallery wall with sizes and prices, close-ups, what to know about collecting, and the price list. Arrow keys, space, tap or swipe to move; `N` for speaker notes; `F` for full screen; link a slide as `deck#s5`. |
 | Preread | `preread.html` | A five-minute read to send before a meeting. Follows light and dark mode, prints cleanly. |
 
@@ -63,19 +63,25 @@ Bean Real are still waiting on theirs.
   another like spilled coffee.
 - `js/brew.js` paints the ring stain, the palette swatches and the painted
   wordmarks, imitating coffee on cotton paper.
-- `js/crema.js` is the live WebGL cup of coffee.
+- `js/reel.js` plays the café loops that open the site (`media/reel/`), in
+  WebGL: each loop spreads over the last as a stain with a dark wet rim, the
+  pointer stirs the picture, and the last loop clears to the paper. Without
+  WebGL, or with reduced motion, the loops' posters stand in.
+- `js/crema.js` is the live WebGL cup of coffee in the deck.
 
 Without WebGL, the pages fall back to Hannah's photos as they are.
 
 ## The film
 
-`media/cafe-studio-film.mp4` is a film of about a minute. It plays from the
+`media/cafe-studio-film.mp4` is a film of about a minute: the café as
+Hannah sees it, abstract and all macro (a drop, crema, steam, light, a
+bloom on paper), then her paintings seen just as close. It plays from the
 "Watch the film" button on the site (or `/#film`), on the deck's second
-slide, and from the preread's closing links. Hannah's paintings appear as
-she painted them: they are her photos, moved with a slow camera. The coffee
-footage, steam and window light around them were generated with
-Higgsfield. `film/SHOTS.md` lists every shot and clip, and `film/build.sh`
-rebuilds the film from them.
+slide, and from the preread's closing links. The coffee footage was
+generated with Higgsfield and graded into her one colour; her paintings
+are her own photos, moved with a slow camera and never regenerated.
+`film/SHOTS.md` lists every shot and clip; `film/build.sh` rebuilds the
+film and `film/loops.sh` the site's opening loops.
 
 ## Running it
 

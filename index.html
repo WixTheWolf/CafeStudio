@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#1c120c">
 <meta property="og:title" content="Cafe Studio">
 <meta property="og:description" content="Coffee-themed art by Hannah, painted with coffee.">
-<meta property="og:image" content="images/works/but-first-tabby.jpg">
+<meta property="og:image" content="media/reel/oil.jpg">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +24,8 @@
   <div class="stage-wall" id="wall"></div>
   <canvas class="stage-dev" id="dev"></canvas>
   <img class="stage-dev-still" id="dev-still" alt="">
-  <canvas class="stage-cup" id="cup"></canvas>
+  <div class="stage-reel-still" id="reel-still"></div>
+  <canvas class="stage-reel" id="reel"></canvas>
 </div>
 
 <header class="bar" id="bar">
@@ -37,7 +38,7 @@
 </header>
 
 <nav class="rail" id="rail" aria-label="Chapters">
-  <a href="#top" data-for="cup"><span>The cup</span></a>
+  <a href="#top" data-for="reel"><span>The café</span></a>
   <a href="#medium" data-for="ring"><span>The medium</span></a>
   <a href="#palette" data-for="strength"><span>The palette</span></a>
   <a href="#process" data-for="layers"><span>The process</span></a>
@@ -48,24 +49,40 @@
 </nav>
 
 <main>
-  <section class="w w-cup" id="top" data-w="cup">
+  <section class="w w-reel" id="top" data-w="reel">
     <div class="pin">
       <div class="hero" id="hero">
-        <p class="eyebrow">Hand-painted in coffee by Hannah</p>
+        <p class="eyebrow">Original paintings, made with coffee</p>
         <h1 class="hero-title">Cafe <span>Studio</span></h1>
         <div class="hero-foot">
-          <p class="hero-lede">Coffee-themed art, painted with coffee. Scroll, and watch one of Hannah’s paintings come together.</p>
+          <p class="hero-lede">Look closer. This is the café as Hannah sees it, and below are the paintings she makes from it, in coffee.</p>
           <div class="hero-actions">
             <button class="film-btn" id="film-btn" type="button"><span class="film-play" aria-hidden="true"></span>Watch the film <span class="film-len" id="film-len">1 min</span></button>
+            <a class="film-btn film-btn-quiet" href="#work">See the paintings</a>
             <p class="cue" aria-hidden="true"><span>Scroll</span><i></i></p>
           </div>
         </div>
       </div>
-      <p class="cup-line" id="cup-line-1">Every painting starts the same way.</p>
-      <div class="cup-line cup-line-2" id="cup-line-2">
-        <p>Lift the cup and the coffee leaves a ring behind.</p>
-        <p class="cup-line-sub">Hannah paints with that same coffee.</p>
-      </div>
+      <ol class="reel-lines" id="reel-lines">
+        <li class="reel-line">
+          <p class="reel-k">The ritual</p>
+          <blockquote><p>I soon found myself fully immersed in the rich culture, ritual, and community that revolves around the coffee lifestyle.</p></blockquote>
+          <p class="reel-by">Hannah</p>
+        </li>
+        <li class="reel-line">
+          <p class="reel-k">The light</p>
+          <blockquote><p>I harness the bold tones, natural warmth, and subtle textures of coffee to create monochromatic works that celebrate everyday moments and connection.</p></blockquote>
+          <p class="reel-by">Hannah</p>
+        </li>
+        <li class="reel-line">
+          <p class="reel-k">The moment</p>
+          <p class="reel-t">A cup, a table, the light on the paper. Every café is full of paintings.</p>
+        </li>
+        <li class="reel-line">
+          <p class="reel-k">The medium</p>
+          <p class="reel-t">She paints them with the coffee itself.</p>
+        </li>
+      </ol>
       <p class="pencil" id="pencil" aria-hidden="true"><svg viewBox="0 0 46 34"><path d="M44 30 C 30 32 14 24 5 6"/><path d="M5 6 L 4 16 M5 6 L 13 11"/></svg>the dark rim forms as it dries</p>
     </div>
   </section>
@@ -231,9 +248,17 @@
   <video id="film-video" controls playsinline preload="none" poster="media/cafe-studio-film-poster.jpg">
     <source src="media/cafe-studio-film.mp4" type="video/mp4">
   </video>
-  <p class="film-credit">Hannah’s paintings, as she painted them. Coffee footage, steam and light generated with Higgsfield.</p>
+  <p class="film-credit">The abstract coffee footage was generated with Higgsfield. Hannah’s paintings are her own photographs, as she painted them.</p>
   <button class="film-close" id="film-close" type="button" aria-label="Close the film">Close</button>
 </dialog>
+
+<div class="reel-src" id="reel-src" aria-hidden="true">
+  <video muted playsinline loop preload="auto" src="media/reel/oil.mp4" poster="media/reel/oil.jpg"></video>
+  <video muted playsinline loop preload="metadata" src="media/reel/steam.mp4" poster="media/reel/steam.jpg"></video>
+  <video muted playsinline loop preload="metadata" src="media/reel/orbs.mp4" poster="media/reel/orbs.jpg"></video>
+  <video muted playsinline loop preload="metadata" src="media/reel/caustics.mp4" poster="media/reel/caustics.jpg"></video>
+  <video muted playsinline preload="metadata" src="media/reel/bloom.mp4" poster="media/reel/bloom.jpg"></video>
+</div>
 
 <dialog class="viewer" id="viewer" aria-labelledby="v-title">
   <div class="v-inner">
@@ -257,7 +282,7 @@
 
 <script src="js/studio.js" defer></script>
 <script src="js/brew.js" defer></script>
-<script src="js/crema.js" defer></script>
+<script src="js/reel.js" defer></script>
 <script src="js/develop.js" defer></script>
 <script src="js/site.js" defer></script>
 </body>

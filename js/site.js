@@ -1,7 +1,8 @@
 /* Cafe Studio: the scroll.
 
-   The page is one sheet of paper. Scrolling pulls back from a cup of coffee,
-   lifts the cup and leaves its ring. The ring blooms, the palette appears,
+   The page opens in the café as Hannah sees it: macro loops of crema,
+   steam and light, one spreading into the next like coffee on paper, until
+   the last one clears to the sheet and leaves a ring. The ring blooms, the palette appears,
    and one of Hannah's paintings comes back together on the paper, wash by
    wash, before it is framed and hung on the gallery wall with the rest of
    her work. Then her close-ups fill the screen, her kitchen photos drift by
@@ -11,8 +12,8 @@
 (function () {
   "use strict";
 
-  var S = window.STUDIO, B = window.Brew, Crema = window.Crema, Develop = window.Develop;
-  if (!S || !B || !Crema || !Develop) return;
+  var S = window.STUDIO, B = window.Brew, Reel = window.Reel, Develop = window.Develop;
+  if (!S || !B || !Reel || !Develop) return;
 
   var doc = document.documentElement;
   doc.classList.add("js");
@@ -30,13 +31,13 @@
   function smooth(a, b, v) { var t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); }
   function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
 
-  var stageEl = $("#stage"), paperC = $("#paper"), devC = $("#dev"), devStill = $("#dev-still"), wall = $("#wall"), cupC = $("#cup");
+  var stageEl = $("#stage"), paperC = $("#paper"), devC = $("#dev"), devStill = $("#dev-still"), wall = $("#wall"), reelC = $("#reel");
   var barMark = $(".bar-mark"), railLinks = Array.prototype.slice.call(document.querySelectorAll("#rail a"));
-  var secCup = $("#top"), secRing = $("#medium"), secStr = $("#palette"), secLay = $("#process");
+  var secReel = $("#top"), secRing = $("#medium"), secStr = $("#palette"), secLay = $("#process");
   var secGal = $("#work"), secClose = $("#closer"), secHome = $("#home"), secNight = $("#artist"), sheetEl = $("#sheet");
-  var hero = $("#hero"), line1 = $("#cup-line-1"), line2 = $("#cup-line-2"), pencil = $("#pencil");
+  var hero = $("#hero"), pencil = $("#pencil");
   var track = $("#track"), gHead = $("#g-head");
-  var SECTIONS = [secCup, secRing, secStr, secLay, secGal, secClose, secHome, secNight, sheetEl];
+  var SECTIONS = [secReel, secRing, secStr, secLay, secGal, secClose, secHome, secNight, sheetEl];
   var feature = S.work(S.feature);
 
   /* ---------- content from js/studio.js ---------- */
@@ -158,7 +159,7 @@
 
   /* ---------- measuring ---------- */
 
-  var vw = 0, vh = 0, W = 0, H = 0, stageScale = 1, R0 = 2, R1 = 0.28, ringR = 0;
+  var vw = 0, vh = 0, W = 0, H = 0, stageScale = 1, R1 = 0.28, ringR = 0;
   var hangLen = 0, trackLen = 0, trackShift = 0, stepCentres = [];
   var TRAVEL = 1.6;  // horizontal pixels travelled per pixel of scroll along the wall
 
@@ -169,7 +170,6 @@
     stageScale = Math.min(dpr, Math.sqrt(2.1e6 / (vw * vh)));
     W = Math.round(vw * stageScale);
     H = Math.round(vh * stageScale);
-    R0 = Crema.coverRadius(vw, vh) * 1.55;
     R1 = vw < 760 ? 0.31 : 0.27;
     ringR = R1 * Math.min(W, H) * 0.8;
     doc.style.setProperty("--ring-r", (ringR / stageScale).toFixed(1) + "px");
@@ -385,44 +385,102 @@
     c.globalAlpha = 1;
   }
 
-  /* ---------- the cup ---------- */
+  /* ---------- the café, through her eyes ---------- */
 
-  var crema = new Crema(cupC, { maxDpr: 1.25, frozen: reduce });
-  if (!crema.ok) doc.classList.add("no-gl");
+  // Five loops, each spreading over the last like coffee on paper. The last
+  // clears to the sheet underneath, where the ring is waiting.
+  var reel = new Reel(reelC, { maxScale: 1.25 });
+  var reelStill = $("#reel-still"), clips = Array.prototype.slice.call(document.querySelectorAll("#reel-src video"));
+  var reelLines = Array.prototype.slice.call(document.querySelectorAll("#reel-lines .reel-line"));
+  var stills = clips.map(function (v) {
+    var im = el("img");
+    im.src = v.getAttribute("poster");
+    im.alt = "";
+    im.decoding = "async";
+    reelStill.appendChild(im);
+    return im;
+  });
+  var motion = reel.ok && !reduce;
+  if (!motion) doc.classList.add("reel-still-mode");
+  // where each move to the next loop starts (share of the section), and
+  // where on screen each stain starts
+  var MOVES = [0.12, 0.31, 0.5, 0.68], MOVE = 0.1, CLEAR0 = 0.85, CLEAR1 = 0.97;
+  var FROM = [[0.5, 0.6], [0.26, 0.38], [0.74, 0.6], [0.5, 0.45]];
+  var BLOOM = clips.length - 1, bloomOn = false;
+
+  // Moving the pointer stirs the coffee (and tilts the kitchen photos).
+  var stir = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5, s: 0, lx: -1, ly: -1 };
   var mouse = { x: 0, y: 0, tx: 0, ty: 0 };
   window.addEventListener("pointermove", function (e) {
-    mouse.tx = e.clientX / vw * 2 - 1;
-    mouse.ty = -(e.clientY / vh * 2 - 1);
+    var x = e.clientX / vw, y = e.clientY / vh;
+    mouse.tx = x * 2 - 1;
+    mouse.ty = -(y * 2 - 1);
+    if (stir.lx >= 0) stir.s = Math.min(1.3, stir.s + Math.hypot(x - stir.lx, y - stir.ly) * 4);
+    stir.lx = x;
+    stir.ly = y;
+    stir.tx = x;
+    stir.ty = y;
   }, { passive: true });
 
   function setO(e, o) {
     var v = o.toFixed(3);
     if (e._o !== v) { e.style.opacity = v; e._o = v; }
   }
+  function play(v, on) {
+    if (on) {
+      if (v.preload !== "auto") v.preload = "auto";
+      if (v.paused && motion) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () { /* stays on its poster */ }); }
+    } else if (!v.paused) v.pause();
+  }
 
-  function updateCup(y, now) {
-    var p = pinP(secCup, y);
-    var zoom = ease(smooth(0.04, 0.6, p));
-    var R = Math.exp(lerp(Math.log(R0), Math.log(R1), zoom));
-    var lift = smooth(0.64, 0.92, p), alpha = 1 - smooth(0.77, 0.95, p);
-    var inView = y < secCup._top + secCup._h;
-    if (crema.ok && inView && alpha > 0.002) {
-      crema.set({ R: R, lift: lift, alpha: alpha, mx: mouse.x, my: mouse.y });
-      crema.draw(now);
-      setO(cupC, 1);
-    } else {
-      setO(cupC, 0);
+  function updateReel(y, now) {
+    var p = pinP(secReel, y), inView = y < secReel._top + secReel._h;
+    // the loop on screen, and how far the next has spread over it
+    var cur = 0, mix = 0, i;
+    for (i = 0; i < MOVES.length; i++) {
+      if (p < MOVES[i]) break;
+      if (p < MOVES[i] + MOVE) { mix = (p - MOVES[i]) / MOVE; break; }
+      cur = i + 1;
     }
-    doc.style.setProperty("--cup-o", (crema.ok ? 0 : 1 - smooth(0.2, 0.6, p)).toFixed(3));
-    var heroO = 1 - smooth(0.02, 0.16, p);
+    var clear = smooth(CLEAR0, CLEAR1, p), live = inView && clear < 1;
+    var next = mix > 0 ? cur + 1 : -1;
+    // the bloom plays once, from the moment it starts to spread
+    var bloomIn = live && (cur === BLOOM || next === BLOOM);
+    if (bloomIn && !bloomOn) { try { clips[BLOOM].currentTime = 0; } catch (e) { /* not loaded */ } }
+    bloomOn = bloomIn;
+    for (i = 0; i < clips.length; i++) {
+      play(clips[i], live && (i === cur || i === next));
+      if (live && i === cur + 1 && clips[i].preload !== "auto") clips[i].preload = "auto";
+    }
+
+    stir.x = lerp(stir.x, stir.tx, 0.08);
+    stir.y = lerp(stir.y, stir.ty, 0.08);
+    stir.s *= 0.94;
+    var drawn = false;
+    if (live && motion) {
+      drawn = reel.draw({ a: clips[cur], b: next >= 0 ? clips[next] : null, mix: ease(mix), from: FROM[cur],
+        clear: clear, stir: [stir.x, stir.y], swirl: stir.s * 0.9, time: now / 1000,
+        zoom: 1.05 + 0.025 * Math.sin(now / 7000 + cur), seed: 2.3 + cur * 1.7 });
+    }
+    setO(reelC, drawn ? 1 : 0);
+    // the posters sit underneath until the loops are playing, and stand in
+    // for them without WebGL or with reduced motion
+    for (i = 0; i < stills.length; i++) setO(stills[i], i === cur ? 1 : i === next ? smooth(0.2, 0.8, mix) : 0);
+    setO(reelStill, inView && !drawn ? 1 - clear : 0);
+
+    var heroO = 1 - smooth(0.03, MOVES[0] + 0.03, p);
     setO(hero, heroO);
-    hero.style.transform = "translate3d(0," + (-p * 80).toFixed(1) + "px,0)";
+    hero.style.transform = "translate3d(0," + (-smooth(0, MOVES[0] + 0.05, p) * 70).toFixed(1) + "px,0)";
     setO(barMark, 1 - heroO);
-    setO(line1, smooth(0.38, 0.48, p) * (1 - smooth(0.62, 0.7, p)));
-    setO(line2, smooth(0.8, 0.9, p));
-    setO(pencil, smooth(0.86, 0.96, p));
-    // dark while the coffee still covers the top corners of the screen
-    return inView && y <= secCup._top + secCup._h - vh && R * 0.84 * Math.min(vw, vh) > Math.hypot(vw, vh) * 0.46;
+    for (i = 0; i < reelLines.length; i++) {
+      var h0 = MOVES[i] + MOVE, h1 = i + 1 < MOVES.length ? MOVES[i + 1] : CLEAR0;
+      var o = smooth(h0 - 0.01, h0 + 0.04, p) * (1 - smooth(h1 - 0.03, h1 + 0.01, p));
+      setO(reelLines[i], o);
+      reelLines[i].style.transform = "translate3d(0," + ((1 - o) * 24).toFixed(1) + "px,0)";
+    }
+    setO(pencil, smooth(CLEAR1 - 0.02, CLEAR1 + 0.02, p));
+    // dark while the café still covers the top of the screen
+    return inView && clear < 0.35;
   }
 
   /* ---------- the gallery ---------- */
@@ -592,9 +650,9 @@
 
   /* ---------- the frame loop ---------- */
 
-  var currentWorld = "cup";
+  var currentWorld = "reel";
   function worldAt(line) {
-    if (line < secRing._top) return "cup";
+    if (line < secRing._top) return "reel";
     if (line < secStr._top) return "ring";
     if (line < secLay._top) return "strength";
     if (line < secGal._top) return "layers";
@@ -611,7 +669,7 @@
     mouse.x = lerp(mouse.x, mouse.tx, 0.05);
     mouse.y = lerp(mouse.y, mouse.ty, 0.05);
 
-    var cupDark = updateCup(y, now);
+    var reelDark = updateReel(y, now);
 
     var pr = smooth(-0.2, 0.55, centreP(secRing, y));
     var pS = pinP(secStr, y);
@@ -640,7 +698,7 @@
       railLinks.forEach(function (a) { a.classList.toggle("on", a.getAttribute("data-for") === world); });
     }
     var top = worldAt(y + 40), tone = "light";
-    if (top === "cup") tone = cupDark ? "dark" : "light";
+    if (top === "reel") tone = reelDark ? "dark" : "light";
     else if (top === "gallery") tone = e > 0.35 ? "dark" : "light";
     else if (top === "night" || top === "closer") tone = "dark";
     if (doc.getAttribute("data-tone") !== tone) doc.setAttribute("data-tone", tone);
@@ -802,7 +860,7 @@
   var lastW = 0, lastH = 0, resizeT = 0;
   function relayout(rebuild) {
     measure();
-    crema.resize();
+    reel.resize(vw, vh);
     dev.resize(vw, vh);
     closeDev.resize(vw, vh);
     if (rebuild || Math.abs(vw - lastW) > 40 || Math.abs(vh - lastH) > lastH * 0.18) {
@@ -822,6 +880,7 @@
   });
 
   measure();
+  reel.resize(vw, vh);
   lastW = vw;
   lastH = vh;
   dev.resize(vw, vh);

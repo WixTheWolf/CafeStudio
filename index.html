@@ -21,11 +21,19 @@
 
 <div class="stage" id="stage" aria-hidden="true">
   <canvas class="stage-paper" id="paper"></canvas>
+  <div class="stage-fx" id="fx">
+    <video muted playsinline preload="none" data-fx="medium" src="media/fx/splash-left.mp4"></video>
+    <video muted playsinline preload="none" data-fx="palette" src="media/fx/paper-fly.mp4"></video>
+    <video muted playsinline preload="none" data-fx="finish" src="media/fx/splash-up.mp4"></video>
+    <video class="fx-click" muted playsinline preload="none" src="media/fx/crown.mp4"></video>
+  </div>
   <div class="stage-wall" id="wall"></div>
   <canvas class="stage-dev" id="dev"></canvas>
   <img class="stage-dev-still" id="dev-still" alt="">
   <div class="stage-reel-still" id="reel-still"></div>
   <canvas class="stage-reel" id="reel"></canvas>
+  <div class="stage-reel-still" id="brush-still"></div>
+  <canvas class="stage-reel" id="brush-reel"></canvas>
 </div>
 
 <header class="bar" id="bar">
@@ -41,8 +49,10 @@
   <a href="#top" data-for="reel"><span>The café</span></a>
   <a href="#medium" data-for="ring"><span>The medium</span></a>
   <a href="#palette" data-for="strength"><span>The palette</span></a>
+  <a href="#brush" data-for="brush"><span>The brush</span></a>
   <a href="#process" data-for="layers"><span>The process</span></a>
   <a href="#work" data-for="gallery"><span>The collection</span></a>
+  <a href="#through" data-for="through"><span>Step inside</span></a>
   <a href="#closer" data-for="closer"><span>Up close</span></a>
   <a href="#home" data-for="home"><span>At home</span></a>
   <a href="#artist" data-for="night"><span>Hannah</span></a>
@@ -57,7 +67,7 @@
         <div class="hero-foot">
           <p class="hero-lede">Look closer. This is the café as Hannah sees it, and below are the paintings she makes from it, in coffee.</p>
           <div class="hero-actions">
-            <button class="film-btn" id="film-btn" type="button"><span class="film-play" aria-hidden="true"></span>Watch the film <span class="film-len" id="film-len">1 min</span></button>
+            <button class="film-btn" id="film-btn" type="button"><span class="film-play" aria-hidden="true"></span>Watch the film <span class="film-len" id="film-len">1:15</span></button>
             <a class="film-btn film-btn-quiet" href="#work">See the paintings</a>
             <p class="cue" aria-hidden="true"><span>Scroll</span><i></i></p>
           </div>
@@ -111,6 +121,26 @@
     </div>
   </section>
 
+  <section class="w w-brush" id="brush" data-w="brush">
+    <div class="pin">
+      <ol class="reel-lines" id="brush-lines">
+        <li class="reel-line">
+          <p class="reel-k">The brush</p>
+          <p class="reel-t">Weak coffee first, for the palest golden wash.</p>
+        </li>
+        <li class="reel-line">
+          <p class="reel-k">Stroke by stroke</p>
+          <p class="reel-t">Stronger coffee goes on only once the last layer is dry.</p>
+        </li>
+        <li class="reel-line">
+          <p class="reel-k">The details</p>
+          <p class="reel-t">The darkest brew comes last, with the finest point.</p>
+        </li>
+      </ol>
+      <p class="brush-cue" id="brush-cue" aria-hidden="true">keep scrolling: you are holding the brush</p>
+    </div>
+  </section>
+
   <section class="w w-layers" id="process" data-w="layers">
     <div class="card beat process-head">
       <p class="eyebrow">The process</p>
@@ -132,6 +162,17 @@
         <p class="g-note" id="g-note">Every piece is an original, painted by hand with coffee. Tap a painting to see it up close.</p>
       </header>
       <div class="g-track" id="track"></div>
+    </div>
+  </section>
+
+  <section class="w w-through" id="through" data-w="through">
+    <div class="pin through-pin">
+      <div class="tunnel" id="tunnel"></div>
+      <header class="through-head" id="through-head">
+        <p class="eyebrow">Step inside</p>
+        <h2>Walk through the frames.</h2>
+        <p>One painting after another, all the way in. Tap any of them to see it up close and ask about it.</p>
+      </header>
     </div>
   </section>
 
@@ -248,9 +289,15 @@
   <video id="film-video" controls playsinline preload="none" poster="media/cafe-studio-film-poster.jpg">
     <source src="media/cafe-studio-film.mp4" type="video/mp4">
   </video>
-  <p class="film-credit">The abstract coffee footage was generated with Higgsfield. Hannah’s paintings are her own photographs, as she painted them.</p>
+  <p class="film-credit">Music generated with ElevenLabs; the abstract coffee footage with Higgsfield. Hannah’s paintings are her own photographs, as she painted them.</p>
   <button class="film-close" id="film-close" type="button" aria-label="Close the film">Close</button>
 </dialog>
+
+<div class="reel-src" aria-hidden="true" id="brush-src">
+  <video muted playsinline preload="metadata" src="media/fx/brush-wash.mp4" poster="media/fx/brush-wash.jpg"></video>
+  <video muted playsinline preload="metadata" src="media/fx/brush-wide.mp4" poster="media/fx/brush-wide.jpg"></video>
+  <video muted playsinline preload="metadata" src="media/fx/brush-line.mp4" poster="media/fx/brush-line.jpg"></video>
+</div>
 
 <div class="reel-src" id="reel-src" aria-hidden="true">
   <video muted playsinline loop preload="auto" src="media/reel/oil.mp4" poster="media/reel/oil.jpg"></video>

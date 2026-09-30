@@ -18,20 +18,26 @@ html,body{margin:0;width:1920px;height:1080px;background:transparent;overflow:hi
 .endtext{position:absolute;left:0;right:0;top:640px;text-align:center;color:#3a2413}
 .endtext p{margin:0}
 .endline{font:400 44px/1.2 Gloock,Georgia,serif}
+.lab{position:absolute;right:120px;bottom:104px;text-align:right}
+.lab::before{content:"";position:absolute;left:-200px;right:-150px;top:-90px;bottom:-80px;z-index:-1;background:radial-gradient(closest-side,rgba(24,12,5,.55),rgba(24,12,5,.25) 60%,rgba(24,12,5,0))}
+.lab-t{font:400 44px/1.1 Gloock,Georgia,serif;margin:0}
+.lab-s{font:500 18px/1 "DM Mono",monospace;letter-spacing:.24em;text-transform:uppercase;color:#e7b67a;margin:14px 0 0}
 .endmail{margin-top:26px!important;font:500 24px/1 "DM Mono",monospace;letter-spacing:.14em;color:#8a5a33}
 </style>
 <div class="t" id="t0"><div class="low"><p class="eye">Cafe Studio</p><p class="mid">The café,<br>as Hannah sees it.</p></div></div>
 <div class="t" id="t1"><div class="low"><p class="big">One ingredient.</p></div></div>
 <div class="t" id="t2"><div class="low"><p class="big">Coffee.</p></div></div>
-<div class="t" id="t3"><div class="low"><p class="eye">But First, Tabby</p><p class="mid">Painted by hand, in coffee,<br>by Hannah.</p></div></div>
+<div class="t" id="t3"><div class="low"><p class="eye">Cafe Studio</p><p class="mid">Painted by hand, in coffee,<br>by Hannah.</p></div></div>
 <div class="t" id="t4"><div class="low"><p class="q">“In a world chasing perfection,</p></div></div>
 <div class="t" id="t5"><div class="low"><p class="q">I have a deep appreciation<br>for art that shows<br>the human touch.”</p><p class="small">Hannah, artist statement</p></div></div>
 <div class="t" id="t6"><div class="low"><p class="eye">The collection</p><p class="mid">Twenty-one originals.<br>From $100.</p></div></div>
+<div class="t" id="lab"><div class="lab"><p class="lab-t" id="lab-t"></p><p class="lab-s" id="lab-s"></p></div></div>
 <div id="end"><canvas id="paper" width="1920" height="1080"></canvas><canvas id="mark" width="1920" height="1080"></canvas>
 <div class="endtext" id="endtext"><p class="endline">Coffee-themed art, painted with coffee.</p><p class="endmail">cafestudiogallery@gmail.com</p></div></div>
 <script src="../js/brew.js"></script>
 <script>
 var B = window.Brew, markSrc = null;
+function label(t, s) { document.getElementById('lab-t').textContent = t; document.getElementById('lab-s').textContent = s; show('lab'); }
 function show(id) { document.querySelectorAll('.t,#end').forEach(function (e) { e.classList.toggle('on', e.id === id); }); }
 function endSetup() {
   var p = document.getElementById('paper').getContext('2d'), r = B.rng(21);

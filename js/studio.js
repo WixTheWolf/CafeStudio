@@ -2,8 +2,9 @@
    the preread together.
 
    Photos live in images/works/. Each work has a main photo (the matted
-   piece, or the painting itself) and can add a close-up `detail` and a
-   `home` photo of it staged in a kitchen. A work without a photo is left
+   piece, or the painting itself) and can add close-ups (`detail: true` for
+   <slug>-detail.jpg, `detail: 2` to add <slug>-detail-2.jpg) and a `home`
+   photo of it staged at home. A work without a photo is left
    off the gallery until one is added. */
 window.STUDIO = {
   name: "Cafe Studio",
@@ -100,7 +101,7 @@ window.STUDIO = {
 
     { slug: "but-first-tabby", title: "But First, Tabby", series: "coach", mount: "matted", ratio: 1.281, detail: true, size: "9x12", mat: "11x14", price: 450 },
     { slug: "a-classic-breakfast", title: "A Classic Breakfast", series: "coach", mount: "matted", ratio: 1.302, detail: true, size: "9x12", mat: "11x14", price: 450 },
-    { slug: "breakfast-with-brooklyn", title: "Breakfast with Brooklyn", series: "coach", mount: "art", ratio: 0.667, size: "9x12", mat: "11x14", price: 450 },
+    { slug: "breakfast-with-brooklyn", title: "Breakfast with Brooklyn", series: "coach", mount: "matted", ratio: 0.763, detail: 2, home: true, size: "9x12", mat: "11x14", price: 450 },
 
     { slug: "iced-americana", title: "Iced Americana", series: "golden-hour", mount: "panel", ratio: 0.703, home: true, size: "4.75x6.75", price: 150 },
     { slug: "not-just-a-dopio", title: "Not Just a Dopio", series: "golden-hour", mount: "matted", ratio: 1.27, home: true, size: "5x7", mat: "8x10", price: 100 },
@@ -117,7 +118,9 @@ window.STUDIO = {
 (function (S) {
   S.works.forEach(function (w) {
     if (w.photo === undefined) w.photo = "images/works/" + w.slug + ".jpg";
-    w.detailPhoto = w.detail ? "images/works/" + w.slug + "-detail.jpg" : null;
+    w.detailPhotos = [];
+    for (var d = 1; d <= (w.detail === true ? 1 : w.detail || 0); d++) w.detailPhotos.push("images/works/" + w.slug + "-detail" + (d > 1 ? "-" + d : "") + ".jpg");
+    w.detailPhoto = w.detailPhotos[0] || null;
     w.homePhoto = w.home ? "images/works/" + w.slug + "-home.jpg" : null;
     w.wood = w.mount === "panel" || w.mount === "oval";
     w.medium = w.mount === "oval" ? "Coffee on an oval wood panel" : w.wood ? "Coffee on a wood panel" : "Coffee on paper";

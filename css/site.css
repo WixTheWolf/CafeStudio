@@ -1,8 +1,10 @@
 /* Cafe Studio: the site.
-   A fixed stage holds the paper, the gallery wall, Hannah's painting as it
-   is rebuilt (WebGL) and the café loops (WebGL). The story scrolls over it
-   in worlds: the café, the medium, the palette, the process, the
-   collection, up close, at home, then the night café. */
+   A fixed stage holds the paper, the coffee splashes (multiplied onto the
+   paper), the gallery wall, Hannah's painting as it is rebuilt (WebGL) and
+   the café and brush footage (WebGL). The story scrolls over it in worlds:
+   the café, the medium, the palette, the brush, the process, the
+   collection, a walk through her frames, up close, at home, then the night
+   café. */
 
 html { background: var(--paper); }
 
@@ -69,6 +71,25 @@ body {
   box-shadow: 0 30px 60px -28px rgba(42, 26, 16, 0.6);
 }
 .stage-reel, .stage-reel-still { opacity: 0; }
+/* splashes filmed on white: multiplied, only the coffee shows on the paper */
+.stage-fx video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: multiply;
+  opacity: 0;
+}
+.stage-fx .fx-click { inset: auto; object-fit: contain; }
+/* the first splash flies in low and to the right, clear of the words */
+.stage-fx [data-fx="medium"] {
+  transform: translate(18%, 22%) scale(0.9);
+  /* its left side now sits on the page, so it fades out there */
+  -webkit-mask-image: linear-gradient(90deg, transparent 2%, #000 24%);
+  mask-image: linear-gradient(90deg, transparent 2%, #000 24%);
+}
+@media (max-width: 700px) { .stage-fx [data-fx="medium"] { transform: translate(8%, 34%) scale(1.1); } }
 .stage-reel-still { background: var(--espresso); }
 .stage-reel-still img {
   position: absolute;
@@ -391,6 +412,87 @@ main, .sheet { position: relative; z-index: 1; }
   .pencil { font-size: 1.4rem; transform: translate(calc(var(--ring-r, 90px) * -1.2), calc(var(--ring-r, 90px) * -1.55)) rotate(-4deg); }
   .pencil svg { display: none; }
 }
+
+/* the brush */
+
+.w-brush { height: 460vh; }
+.brush-cue {
+  position: absolute;
+  right: var(--gut);
+  top: 16vh;
+  margin: 0;
+  color: rgba(243, 227, 200, 0.9);
+  max-width: min(420px, 68vw);
+  text-align: right;
+  font: 400 1.6rem/1.1 var(--f-hand);
+  text-shadow: 0 2px 16px rgba(12, 6, 3, 0.7);
+  transform: rotate(-3deg);
+  pointer-events: none;
+}
+.js .brush-cue { opacity: 0; }
+#brush-lines .reel-line { max-width: min(560px, 84vw); }
+
+/* step inside: a walk through her frames */
+
+.w-through { height: 760vh; background: var(--wall-deep); }
+.through-pin {
+  color: var(--milk);
+  background: radial-gradient(120% 90% at 50% 45%, #2d3f3c 0%, var(--wall) 45%, var(--wall-deep) 100%);
+}
+.tunnel { position: absolute; inset: 0; overflow: hidden; }
+.tf {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  visibility: hidden;
+  transform-origin: 50% 50%;
+}
+.tf::before {
+  content: "";
+  position: absolute;
+  left: -40%;
+  right: -40%;
+  top: -50%;
+  bottom: -30%;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgba(255, 222, 168, 0.16), transparent 75%);
+  pointer-events: none;
+}
+.tf-art { display: block; padding: 0; border: 0; background: none; cursor: zoom-in; font: inherit; color: inherit; }
+.tf.opening .frame-mat img {
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent var(--h, -40%), #000 calc(var(--h, -40%) + 14%));
+  mask-image: radial-gradient(circle at 50% 50%, transparent var(--h, -40%), #000 calc(var(--h, -40%) + 14%));
+}
+.tf-cap {
+  position: absolute;
+  left: -30%;
+  right: -30%;
+  top: calc(100% + 18px);
+  display: grid;
+  gap: 4px;
+  text-align: center;
+}
+.tf-t { font: 400 1.35rem/1.15 var(--f-display); }
+.tf-s { color: var(--crema); font: 500 0.66rem/1.4 var(--f-mono); letter-spacing: 0.14em; text-transform: uppercase; }
+.through-head {
+  position: absolute;
+  left: var(--gut);
+  top: clamp(90px, 16vh, 170px);
+  z-index: 2000;
+  max-width: 30ch;
+  pointer-events: none;
+}
+.through-head .eyebrow { color: var(--crema); }
+.through-head h2 { margin: 0.3em 0 0.4em; font: 400 clamp(2.2rem, 5vw, 4.2rem)/1 var(--f-display); }
+.through-head p:last-child { color: rgba(243, 227, 200, 0.8); }
+/* reduced motion: the same frames, hung still */
+.tunnel-flat .w-through { height: auto; }
+.tunnel-flat .through-pin { position: relative; height: auto; padding: 16vh var(--gut) 12vh; }
+.tunnel-flat .through-head { position: static; margin-bottom: 8vh; }
+.tunnel-flat .tunnel { position: relative; display: flex; flex-wrap: wrap; justify-content: center; gap: 90px 56px; overflow: visible; }
+.tunnel-flat .tf { position: relative; left: auto; top: auto; visibility: visible; transform: none; margin-bottom: 70px; }
+.tunnel-flat .tf-cap { opacity: 1; }
 
 /* the medium */
 

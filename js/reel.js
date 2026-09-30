@@ -5,10 +5,12 @@
    one colour, and moves between them the way coffee moves on paper: the
    next loop spreads over the last as a stain with a dark wet rim. The
    pointer stirs whatever is on screen, and at the very end the stain
-   clears to the paper underneath.
+   clears to the paper underneath. It can also arrive the same way: with
+   `reveal` below 1 the footage only shows inside a stain spreading from
+   `from`.
 
-   draw({ a: video, b: video or null, mix: 0..1, clear: 0..1, from: [u, v],
-          stir: [x, y] in 0..1, swirl, time, zoom }) */
+   draw({ a: video, b: video or null, mix: 0..1, clear: 0..1, reveal: 0..1,
+          from: [u, v], stir: [x, y] in 0..1, swirl, time, zoom }) */
 (function () {
   "use strict";
 
@@ -18,7 +20,7 @@
     "precision highp float;",
     "uniform sampler2D uA,uB;",
     "uniform vec2 uRes,uFrom,uStir;",
-    "uniform float uAspA,uAspB,uMix,uClear,uHasB,uSwirl,uTime,uZoom,uSeed;",
+    "uniform float uAspA,uAspB,uMix,uClear,uReveal,uHasB,uSwirl,uTime,uZoom,uSeed;",
     "float h(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}",
     "float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);",
     "  return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}",
@@ -60,6 +62,10 @@
     "    float edge=r2b*.8;",
     "    col=mix(col,vec3(.36,.21,.11),edge*k);",
     "    alpha=max(alpha,edge*.55);}",
+    // arriving: only inside a spreading stain, with its wet rim
+    "  if(uReveal<1.){",
+    "    float rr;float k=stain(uv,ra,uReveal,uSeed+5.3,rr);",
+    "    col*=1.-rr*.45;alpha*=max(k,rr*.7);}",
     // vignette and grain
     "  vec2 c=uv-.5;col*=1.-dot(c,c)*.55;",
     "  col+=(h(gl_FragCoord.xy+fract(uTime*7.1)*97.)-.5)*.035;",
@@ -94,7 +100,7 @@
     gl.enableVertexAttribArray(loc);
     gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
     this.u = {};
-    var names = ["uA", "uB", "uRes", "uFrom", "uStir", "uAspA", "uAspB", "uMix", "uClear", "uHasB", "uSwirl", "uTime", "uZoom", "uSeed"];
+    var names = ["uA", "uB", "uRes", "uFrom", "uStir", "uAspA", "uAspB", "uMix", "uClear", "uReveal", "uHasB", "uSwirl", "uTime", "uZoom", "uSeed"];
     for (var i = 0; i < names.length; i++) this.u[names[i]] = gl.getUniformLocation(pr, names[i]);
     gl.uniform1i(this.u.uA, 0);
     gl.uniform1i(this.u.uB, 1);
@@ -168,6 +174,7 @@
     gl.uniform1f(u.uMix, hasB ? p.mix : 0);
     gl.uniform1f(u.uHasB, hasB ? 1 : 0);
     gl.uniform1f(u.uClear, p.clear || 0);
+    gl.uniform1f(u.uReveal, p.reveal == null ? 1 : p.reveal);
     gl.uniform1f(u.uSwirl, p.swirl || 0);
     gl.uniform1f(u.uTime, p.time || 0);
     gl.uniform1f(u.uZoom, p.zoom || 1);

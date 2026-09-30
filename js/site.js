@@ -2,13 +2,17 @@
 
    The page opens in the café as Hannah sees it: macro loops of crema,
    steam and light, one spreading into the next like coffee on paper, until
-   the last one clears to the sheet and leaves a ring. The ring blooms, the palette appears,
-   and one of Hannah's paintings comes back together on the paper, wash by
-   wash, before it is framed and hung on the gallery wall with the rest of
-   her work. Then her close-ups fill the screen, her kitchen photos drift by
-   in morning light, and the lights go down in the night café, where she
-   tells her story. Everything on the stage is a function of scroll
-   position, so it plays the same forwards and backwards. */
+   the last one clears to the sheet and leaves a ring. A splash of coffee
+   flies across the paper, the ring blooms and the palette appears, and
+   sheets of paper tumble through a splash into the brush: her three steps,
+   filmed up close and scrubbed by the scroll. Then one of her paintings
+   comes back together on the paper, wash by wash, coffee erupts behind it,
+   and it is framed and hung on the gallery wall with the rest of her work.
+   From the wall you walk through her frames, one after another, into her
+   close-ups; her kitchen photos drift by in morning light, and the lights
+   go down in the night café, where she tells her story. Everything on the
+   stage is a function of scroll position, so it plays the same forwards
+   and backwards. */
 (function () {
   "use strict";
 
@@ -32,12 +36,13 @@
   function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
 
   var stageEl = $("#stage"), paperC = $("#paper"), devC = $("#dev"), devStill = $("#dev-still"), wall = $("#wall"), reelC = $("#reel");
+  function slice(l) { return Array.prototype.slice.call(l); }
   var barMark = $(".bar-mark"), railLinks = Array.prototype.slice.call(document.querySelectorAll("#rail a"));
-  var secReel = $("#top"), secRing = $("#medium"), secStr = $("#palette"), secLay = $("#process");
-  var secGal = $("#work"), secClose = $("#closer"), secHome = $("#home"), secNight = $("#artist"), sheetEl = $("#sheet");
+  var secReel = $("#top"), secRing = $("#medium"), secStr = $("#palette"), secBrush = $("#brush"), secLay = $("#process");
+  var secGal = $("#work"), secThrough = $("#through"), secClose = $("#closer"), secHome = $("#home"), secNight = $("#artist"), sheetEl = $("#sheet");
   var hero = $("#hero"), pencil = $("#pencil");
   var track = $("#track"), gHead = $("#g-head");
-  var SECTIONS = [secReel, secRing, secStr, secLay, secGal, secClose, secHome, secNight, sheetEl];
+  var SECTIONS = [secReel, secRing, secStr, secBrush, secLay, secGal, secThrough, secClose, secHome, secNight, sheetEl];
   var feature = S.work(S.feature);
 
   /* ---------- content from js/studio.js ---------- */
@@ -498,6 +503,208 @@
     return inView && clear < 0.35;
   }
 
+  /* ---------- the brush ---------- */
+
+  // Hannah's three steps, filmed up close: a pale wash, stronger strokes,
+  // then the finest details. The footage arrives as a stain spreading over
+  // the paper, and the scroll moves the brush: each clip is scrubbed, not
+  // played, so the stroke goes as far as the reader does.
+  var brushC = $("#brush-reel"), brushReel = new Reel(brushC, { maxScale: 1.25 });
+  var brushStill = $("#brush-still"), brushClips = slice(document.querySelectorAll("#brush-src video"));
+  var brushLines = slice(document.querySelectorAll("#brush-lines .reel-line")), brushCue = $("#brush-cue");
+  var brushStills = brushClips.map(function (v) {
+    var im = el("img");
+    im.src = v.getAttribute("poster");
+    im.alt = "";
+    im.decoding = "async";
+    brushStill.appendChild(im);
+    return im;
+  });
+  var brushMotion = brushReel.ok && !reduce;
+  // each clip's stretch of the section, where the next spreads over it,
+  // and where each stain starts
+  var BSPAN = [[0.06, 0.42], [0.34, 0.7], [0.62, 0.97]], BMOVES = [0.34, 0.62], BMOVE = 0.08;
+  var BFROM = [[0.5, 0.55], [0.3, 0.5], [0.72, 0.45]];
+  // where the brush is already in shot in each clip, in seconds
+  var BIN = [0.9, 0.2, 1.5];
+
+  function scrub(v, t, t0) {
+    if (v.preload !== "auto") v.preload = "auto";
+    if (!v.duration || v.readyState < 1 || v.seeking) return;
+    var to = t0 + clamp(t, 0, 1) * (v.duration - t0 - 0.05);
+    if (Math.abs(v.currentTime - to) > 0.02) { try { v.currentTime = to; } catch (e) { /* not seekable yet */ } }
+  }
+
+  function updateBrush(y, now) {
+    var near = y + vh * 2.5 > secBrush._top && y < secBrush._top + secBrush._h;
+    if (!near) {
+      setO(brushC, 0);
+      setO(brushStill, 0);
+      return false;
+    }
+    var p = pinP(secBrush, y), cur = 0, mix = 0, i;
+    for (i = 0; i < BMOVES.length; i++) {
+      if (p < BMOVES[i]) break;
+      if (p < BMOVES[i] + BMOVE) { mix = (p - BMOVES[i]) / BMOVE; break; }
+      cur = i + 1;
+    }
+    var next = mix > 0 ? cur + 1 : -1;
+    var reveal = y >= secBrush._top ? smooth(0, 0.07, p) : 0, clear = smooth(0.9, 0.975, p);
+    var live = reveal > 0 && clear < 1;
+    for (i = 0; i < brushClips.length; i++) scrub(brushClips[i], (p - BSPAN[i][0]) / (BSPAN[i][1] - BSPAN[i][0]), BIN[i]);
+    var drawn = false;
+    if (live && brushMotion) {
+      drawn = brushReel.draw({ a: brushClips[cur], b: next >= 0 ? brushClips[next] : null, mix: ease(mix), from: BFROM[cur],
+        reveal: reveal, clear: clear, stir: [stir.x, stir.y], swirl: stir.s * 0.7, time: now / 1000, zoom: 1.03, seed: 7.1 + cur * 1.3 });
+    }
+    setO(brushC, drawn ? 1 : 0);
+    for (i = 0; i < brushStills.length; i++) setO(brushStills[i], i === cur ? 1 : i === next ? smooth(0.2, 0.8, mix) : 0);
+    setO(brushStill, live && !drawn ? Math.min(reveal, 1 - clear) : 0);
+    var holds = [[0.1, 0.33], [0.43, 0.61], [0.71, 0.88]];
+    for (i = 0; i < brushLines.length; i++) {
+      var o = smooth(holds[i][0] - 0.02, holds[i][0] + 0.03, p) * (1 - smooth(holds[i][1] - 0.02, holds[i][1] + 0.01, p));
+      setO(brushLines[i], o);
+      brushLines[i].style.transform = "translate3d(0," + ((1 - o) * 24).toFixed(1) + "px,0)";
+    }
+    setO(brushCue, smooth(0.08, 0.12, p) * (1 - smooth(0.24, 0.3, p)));
+    return live && reveal > 0.6 && clear < 0.35;
+  }
+
+  /* ---------- coffee splashes ---------- */
+
+  // Splashes filmed on white, multiplied onto the paper so only the coffee
+  // shows. Each one plays once when its moment comes and stays on the paper
+  // until its world scrolls away; scrolling back above it puts it back.
+  var fxEls = {};
+  slice(document.querySelectorAll("#fx video[data-fx]")).forEach(function (v) { fxEls[v.getAttribute("data-fx")] = v; });
+  function fxWarm(name) {
+    var v = fxEls[name];
+    if (v && v.preload !== "auto" && !reduce) v.preload = "auto";
+  }
+  function fxAt(name, on, o) {
+    var v = fxEls[name];
+    if (!v) return;
+    if (reduce) { setO(v, 0); return; }
+    if (on && !v._on) {
+      v._on = true;
+      fxWarm(name);
+      try { v.currentTime = 0; } catch (e) { /* not loaded yet */ }
+      var pr = v.play();
+      if (pr && pr.catch) pr.catch(function () { v._on = false; });
+    } else if (!on && v._on) {
+      v._on = false;
+      v.pause();
+    }
+    setO(v, on ? o : 0);
+  }
+  function updateFx(y, built) {
+    // as the café clears, a splash flies across the fresh paper
+    var inRing = (y + vh - secRing._top) / vh;
+    if (inRing > -1) fxWarm("medium");
+    fxAt("medium", inRing > 0.35 && y < secStr._top, 1 - smooth(secRing._top + secRing._h * 0.25, secRing._top + secRing._h * 0.55, y));
+    // sheets of paper tumble through a splash on the way to the brush
+    var pS = pinP(secStr, y);
+    if (pS > 0.4) fxWarm("palette");
+    fxAt("palette", pS > 0.8 && y < secBrush._top + secBrush._h * 0.3, 1);
+    // the finished painting: coffee erupts behind it
+    if (built > 3) fxWarm("finish");
+    fxAt("finish", built >= 3.97 && y < secGal._top + vh * 0.25, 1 - smooth(secGal._top - vh * 0.2, secGal._top + vh * 0.2, y));
+  }
+
+  // A tap on the paper throws a splash of coffee under the finger.
+  var crown = $("#fx .fx-click");
+  function splashAt(x, y) {
+    if (!crown || reduce) return;
+    crown.preload = "auto";
+    var sz = Math.min(vw, vh) * 0.55;
+    crown.style.width = crown.style.height = sz.toFixed(0) + "px";
+    crown.style.left = (x - sz / 2).toFixed(0) + "px";
+    crown.style.top = (y - sz / 2).toFixed(0) + "px";
+    crown.style.transition = "none";
+    setO(crown, 1);
+    try { crown.currentTime = 0; } catch (e) { /* not loaded yet */ }
+    var pr = crown.play();
+    if (pr && pr.catch) pr.catch(function () { setO(crown, 0); });
+    clearTimeout(crown._t);
+    crown._t = setTimeout(function () {
+      crown.style.transition = "opacity 1.4s ease";
+      setO(crown, 0);
+    }, 3600);
+  }
+
+  /* ---------- step inside ---------- */
+
+  // Seven of her paintings, hung one behind another. Scrolling walks through
+  // them: each frame comes forward until its painting fills the screen, then
+  // the painting opens from the middle and the next one is waiting behind
+  // it. The last one stays, and its close-up is the next thing on the page.
+  var TUNNEL = ["breakfast-with-brooklyn", "coffee-house", "every-last-crumb", "al-banco", "iced-americana",
+    "sticky-honey-pancake-balls", "a-pleasant-pause"].map(S.work).filter(function (w) { return w && w.photo; });
+  var tunnel = $("#tunnel"), throughHead = $("#through-head");
+  var tfs = TUNNEL.map(function (w, i) {
+    var fig = el("figure", "tf mount-" + w.mount), btn = el("button", "tf-art");
+    var mould = el("span", "frame-moulding"), mat = el("span", "frame-mat"), im = el("img");
+    btn.type = "button";
+    btn.setAttribute("aria-label", "View " + w.title);
+    im.src = w.photo;
+    im.alt = w.title + ", " + w.medium.toLowerCase();
+    im.decoding = "async";
+    mat.appendChild(im);
+    mould.appendChild(mat);
+    btn.appendChild(mould);
+    fig.appendChild(btn);
+    var cap = el("figcaption", "tf-cap");
+    cap.appendChild(el("span", "tf-t", w.title));
+    cap.appendChild(el("span", "tf-s", S.spec(w)));
+    fig.appendChild(cap);
+    btn.addEventListener("click", function () { openViewer(w, 0); });
+    tunnel.appendChild(fig);
+    return { w: w, fig: fig, im: im, cap: cap, side: i % 2 ? 1 : -1, key: "", hole: "" };
+  });
+  if (reduce) doc.classList.add("tunnel-flat");
+
+  function layoutTunnel() {
+    tfs.forEach(function (t) {
+      var h = Math.min(vh * 0.5, vw * 0.62 / t.w.ratio) * (t.w.mount === "art" ? 0.86 : 1);
+      t.im.style.height = h.toFixed(1) + "px";
+      t.im.style.width = (h * t.w.ratio).toFixed(1) + "px";
+    });
+  }
+
+  function updateThrough(y) {
+    if (reduce || y + vh < secThrough._top || y > secThrough._top + secThrough._h) return;
+    var p = pinP(secThrough, y), n = tfs.length, cam = lerp(-1.15, n - 1 + 0.18, p);
+    setO(throughHead, 1 - smooth(0.015, 0.08, p));
+    for (var i = 0; i < n; i++) {
+      var t = tfs[i], r = i - cam, last = i === n - 1;
+      var s = 0.72 / Math.max(0.03, r + 0.36);
+      var o = (1 - smooth(2.3, 3.3, r)) * (last ? 1 : 1 - smooth(0.06, 0.24, -r));
+      var tf = "";
+      if (o > 0.001) {
+        // far frames hang a little off to the side, and straighten as they come
+        var lean = smooth(0, 2.4, r);
+        tf = "translate(-50%,-50%) translate3d(" + (t.side * vw * 0.07 * lean).toFixed(1) + "px," + (vh * 0.03 * lean).toFixed(1) +
+          "px,0) scale(" + s.toFixed(4) + ") rotate(" + (t.side * 2.4 * lean).toFixed(2) + "deg)";
+      }
+      if (tf !== t.key) {
+        t.fig.style.transform = tf;
+        t.fig.style.visibility = tf ? "visible" : "hidden";
+        t.fig.style.zIndex = String(Math.round(1000 - r * 100));
+        t.key = tf;
+      }
+      setO(t.fig, o);
+      // passing through: the painting opens from the middle, like a wet wash
+      var hole = last ? -40 : lerp(-40, 120, smooth(1.55, 3.4, s));
+      var hk = hole <= -40 ? "" : hole.toFixed(1) + "%";
+      if (hk !== t.hole) {
+        t.fig.classList.toggle("opening", !!hk);
+        if (hk) t.fig.style.setProperty("--h", hk);
+        t.hole = hk;
+      }
+      setO(t.cap, smooth(0.3, 0.46, s) * (1 - smooth(1.05, 1.45, s)));
+    }
+  }
+
   /* ---------- the gallery ---------- */
 
   var lastTx = 0;
@@ -669,9 +876,11 @@
   function worldAt(line) {
     if (line < secRing._top) return "reel";
     if (line < secStr._top) return "ring";
-    if (line < secLay._top) return "strength";
+    if (line < secBrush._top) return "strength";
+    if (line < secLay._top) return "brush";
     if (line < secGal._top) return "layers";
-    if (line < secClose._top) return "gallery";
+    if (line < secThrough._top) return "gallery";
+    if (line < secClose._top) return "through";
     if (line < secHome._top) return "closer";
     if (line < secNight._top) return "home";
     if (line < sheetEl._top) return "night";
@@ -685,6 +894,7 @@
     mouse.y = lerp(mouse.y, mouse.ty, 0.05);
 
     var reelDark = updateReel(y, now);
+    var brushDark = updateBrush(y, now);
 
     var pr = smooth(-0.2, 0.55, centreP(secRing, y));
     var pS = pinP(secStr, y);
@@ -699,12 +909,14 @@
 
     var pcL = centreP(secLay, y);
     var e = updateGallery(y, pcL);
+    updateFx(y, buildAt(vw < 700 ? (y + vh * 0.8 - secLay._top) / secLay._h : pcL));
+    updateThrough(y);
     updateClose(y);
     updateHome(y);
     if (!sheetPainted && y + vh * 2 > sheetEl._top) paintSheet();
     if (y + vh > secNight._top && y < secNight._top + secNight._h) drawSteam(now);
 
-    var inGallery = y >= secGal._top - vh && y < secClose._top;
+    var inGallery = y >= secGal._top - vh && y < secThrough._top;
     sway(y, inGallery && e >= 1);
 
     var world = worldAt(y + vh / 2);
@@ -714,6 +926,8 @@
     }
     var top = worldAt(y + 40), tone = "light";
     if (top === "reel") tone = reelDark ? "dark" : "light";
+    else if (top === "brush" || top === "strength") tone = brushDark ? "dark" : "light";
+    else if (top === "through") tone = "dark";
     else if (top === "gallery") tone = e > 0.35 ? "dark" : "light";
     else if (top === "night" || top === "closer") tone = "dark";
     if (doc.getAttribute("data-tone") !== tone) doc.setAttribute("data-tone", tone);
@@ -722,10 +936,11 @@
 
   /* ---------- touches ---------- */
 
-  // Tap the paper and a drop of coffee lands there.
+  // Tap the paper and coffee splashes there, leaving a drop behind.
   document.addEventListener("click", function (ev) {
     if (reduce || !(currentWorld === "ring" || currentWorld === "strength" || currentWorld === "layers")) return;
     if (ev.target.closest && ev.target.closest("a, button, input, textarea, select, label, .card, .beat, .strength-head, .swatches, dialog")) return;
+    splashAt(ev.clientX, ev.clientY);
     var size = 180, k = Math.min(window.devicePixelRatio || 1, 2), n = size * k;
     var c = B.sheet(n, n), ctx = c.getContext("2d"), r = B.rng((Math.random() * 1e9) | 0), u = k * 0.6;
     B.wash(ctx, B.ellipse(n / 2, n / 2, 15 * k, 14 * k, 12, r), r, { s: 0.45 + r() * 0.35, layers: 8, alpha: 0.16, baseVar: 0.45, depth: 2, spread: 0.3, rim: 2.2, u: u });
@@ -764,7 +979,7 @@
     thumbs.innerHTML = "";
     art.className = "v-art mount-" + w.mount;
     var shots = [[w.photo, "The piece"]];
-    if (w.detailPhoto) shots.push([w.detailPhoto, "Up close"]);
+    w.detailPhotos.forEach(function (p) { shots.push([p, "Up close"]); });
     if (w.homePhoto) shots.push([w.homePhoto, "At home"]);
     var big = el("img");
     big.alt = w.title;
@@ -876,6 +1091,7 @@
   function relayout(rebuild) {
     measure();
     reel.resize(vw, vh);
+    brushReel.resize(vw, vh);
     dev.resize(vw, vh);
     closeDev.resize(vw, vh);
     if (rebuild || Math.abs(vw - lastW) > 40 || Math.abs(vh - lastH) > lastH * 0.18) {
@@ -886,6 +1102,7 @@
     }
     layoutGallery();
     layoutHome();
+    layoutTunnel();
     cache();
     paperKey = "";
   }
@@ -896,12 +1113,14 @@
 
   measure();
   reel.resize(vw, vh);
+  brushReel.resize(vw, vh);
   lastW = vw;
   lastH = vh;
   dev.resize(vw, vh);
   closeDev.resize(vw, vh);
   layoutGallery();
   layoutHome();
+  layoutTunnel();
   cache();
   buildPaper();
   if (document.fonts && document.fonts.ready) {

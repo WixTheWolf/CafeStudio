@@ -1,54 +1,71 @@
 # Cafe Studio: the film
 
-A film of about a minute for the site and the deck: the café as Hannah sees
-it, then her paintings seen just as close. No people and no faces; the café
-is abstract, all macro and light, and every generated shot is graded into
-her one colour (espresso, roast, crema, cream) so it reads as coffee on
-paper rather than footage.
+A film of a minute and a quarter for the site and the deck, cut to an
+original coffee-house score. Hannah's paintings are the film: fourteen of
+her close-ups, each moved with a slow camera and named as it appears, and a
+montage of six pieces on the gallery wall. A few abstract coffee shots
+open it and give it one breath in the middle. No people and no faces;
+every generated shot is graded into her one colour (espresso, roast,
+crema, cream) so it reads as coffee on paper rather than footage.
 
 Hannah's paintings appear exactly as she painted them: they are her
-photographs, moved with a slow camera, never regenerated and never graded.
+photographs, never regenerated and never graded.
 
 The finished film is `media/cafe-studio-film.mp4` (and its poster), built by
-`film/build.sh` from the clips below plus the files in this folder. The
-loops that open the site (`media/reel/`) are cut from the same clips by
-`film/loops.sh`.
+`film/build.sh` from the clips below plus the files in this folder.
+
+## Music
+
+`score.mp3` is an original instrumental generated with ElevenLabs Music
+(`eleven_music_v2_5`, 78 s, the second of two takes), from this brief:
+
+> Cinematic coffee-house jazz instrumental, warm and intimate. Opens with a
+> lone felt piano and soft vinyl warmth, slow tempo around 78 BPM; at about
+> 12 seconds brushed snare, upright bass and a gentle Rhodes join in a
+> relaxed swing; strings swell in slowly from 40 seconds to a tender
+> cinematic peak around 60 seconds, then everything falls away to solo
+> piano for a quiet final chord.
+
+It is 78 BPM in 4/4, so one bar every 3.077 s. `build.sh` trims its lead-in
+so the first downbeat lands in the first dissolve, then starts every shot
+on a bar line: every cut is a 0.6 s dissolve centred on a downbeat. The
+opening shots keep a little of their own sound (the drop, the brush) under
+the score.
 
 ## Cut
 
-| # | Shot | Source | Title |
+| Bar | Shot | Source | On screen |
 | --- | --- | --- | --- |
-| 1 | A drop of espresso falls into a still pool of coffee | `drop` | |
-| 2 | A ribbon of coffee pours through the dark | `ribbon` | |
-| 3 | Coffee oils marbling on the surface of a cup | `oil` | The café, as Hannah sees it. |
-| 4 | Crema, swirling | `crema` | |
-| 5 | Steam curling through a beam of light | `steam` | “In a world chasing perfection, |
-| 6 | The café's lights, out of focus | `orbs` | I have a deep appreciation for art that shows the human touch.” |
-| 7 | Light through iced coffee, moving on paper | `caustics` | |
-| 8 | A bead of coffee falls from a brush | `brush` | One ingredient. |
-| 9 | Coffee poured onto paper blooms into a stain | `bloom` | Coffee. |
-| 10 | Pools of coffee drying into rings | `wash` | |
-| 11 | *But First, Tabby*, up close (the C clasp) | her photo `src/p1-tabby.jpg` | Painted by hand, in coffee, by Hannah. |
-| 12 | *A Classic Breakfast*, up close | her photo `src/p2-breakfast.jpg` | |
-| 13 | *Fresh Baked*, up close | her photo `src/p3-fresh.jpg` | |
-| 14 | *The Coffee House at Second and Bridge*, up close | her photo `src/p4-house.jpg` | |
-| 15 | Six pieces under a spotlight | her photos (`montage.mp4`) | Twenty-one originals. From $100. |
-| 16 | “Cafe Studio” paints itself onto paper | `end.mp4` | |
+| 0 | A drop of espresso falls into a still pool | `drop` | |
+| 1 | A bead of coffee falls from a brush | `brush` | One ingredient. |
+| 2–3 | Coffee poured onto paper blooms into a stain | `bloom` | Coffee. |
+| 4 | *But First, Tabby*, the whole painting | her photo `src/tabby-full.jpg` | Painted by hand, in coffee, by Hannah. · *But First, Tabby* |
+| 5 | *But First, Tabby*, the C clasp | `src/p1-tabby.jpg` | |
+| 6 | *A Classic Breakfast* | `src/classic.jpg` | *A Classic Breakfast* |
+| 7 | *Breakfast with Brooklyn*, the croissant | `src/brooklyn-croissant.jpg` | *Breakfast with Brooklyn* |
+| 8 | *Breakfast with Brooklyn*, the cup | `src/brooklyn-cup.jpg` | |
+| 9 | *Bean Up For Hours* | `src/bean-up.jpg` | *Bean Up For Hours* |
+| 10 | *Every Last Crumb* | `src/crumb.jpg` | *Every Last Crumb* |
+| 11 | Steam curling through a beam of light | `steam` | “In a world chasing perfection, |
+| 12 | The café's lights, out of focus | `orbs` | I have a deep appreciation for art that shows the human touch.” |
+| 13 | *A Pleasant Pause* | `src/pause.jpg` | *A Pleasant Pause* |
+| 14 | *Fresh Baked* | `src/p3-fresh.jpg` | *Fresh Baked* |
+| 15 | *Iced Americana* | `src/iced.jpg` | *Iced Americana* |
+| 16 | *It's Bean a While* | `src/bean-while.jpg` | *It's Bean a While* |
+| 17 | *Bean Thinking of You* | `src/thinking.jpg` | *Bean Thinking of You* |
+| 18–19 | Six pieces under a spotlight | her photos (`montage.mp4`) | Twenty-one originals. From $100. |
+| 20 | *The Coffee House at Second and Bridge* | `src/p4-house.jpg` | *The Coffee House at Second and Bridge* |
+| 21 | *The Perfect Pair* | `src/pair.jpg` | *The Perfect Pair* |
+| 22–24 | “Cafe Studio” paints itself onto paper | `end.mp4` | |
 
-The sound is each shot's own (the drop, the pour, the brush), with a quiet
-café (`cafe`) under the second half.
-
-## Site loops
-
-| Loop | Clip | Chapter |
-| --- | --- | --- |
-| `oil` | `oil` | The opening, under the name |
-| `steam` | `steam` | The ritual |
-| `orbs` | `orbs` | The light |
-| `caustics` | `caustics` | The moment |
-| `bloom` | `bloom` (plays once) | The medium, then it clears to the paper |
+Each painting's name and series appear in the corner as it comes on
+(`titles/l-*.png`); the other titles are `titles/t1.png` to `t6.png`. All of
+them are rendered from `titles.html` with the site's fonts.
 
 ## Generated clips (Higgsfield, Cinema Studio Video, pro)
+
+For the film and the café loops that open the site (`media/reel/`, cut by
+`film/loops.sh`):
 
 | Clip | Job |
 | --- | --- |
@@ -62,15 +79,29 @@ café (`cafe`) under the second half.
 | brush | 9572e972-4631-4571-9578-6e6d86d58fba |
 | bloom | 305148f1-5b27-462d-a6d0-178a5e5d2ef9 |
 | wash | 5638d98b-1be2-47d4-8b48-b84d165f1292 |
-| cafe (Kling 3.0, used for its sound) | 9ee9db7d-0b5e-4b70-8951-f9f485b2968f |
+
+For the splashes and brushes on the site (`media/fx/`, made by `film/fx.py`):
+
+| Clip | What it is | Job |
+| --- | --- | --- |
+| splash-left | Coffee flung across white paper | e82fd798-4f9a-4a86-b4b7-4886b18f103a |
+| paper-fly | Sheets of paper tumbling through a splash | 6dc42b3d-34b4-465a-8082-bd4076bdea69 |
+| splash-up | Coffee erupting upward | 63e7ad7f-6c58-41ad-b814-fecc04fd7e1d |
+| splash-paper | A drop landing in a crown (the tap splash) | e3e22505-d899-489e-bf63-c510e4e6491a |
+| brush-wash | A wide brush laying a pale wash | 872d7a93-c231-4ada-8e39-c6f30549756c |
+| brush-wide | A round brush pooling a stronger stroke | 82c82f4f-2aa7-4380-ab65-8c6745fb05ff |
+| brush-line | A fine point drawing the last details | a98a5eaa-61f3-4121-aec6-a3d67d8c8b86 |
 
 ## Rebuilding
 
-Download the clips into one folder as `<clip>.mp4`, then:
+Download the clips into one folder as `<clip>.mp4`, then from the
+repository root:
 
+    python film/montage.py                        # montage.mp4
     film/build.sh <clips-folder> media/cafe-studio-film.mp4
     film/loops.sh <clips-folder> media/reel
+    python film/fx.py <clips-folder> media/fx
 
-Both need ffmpeg; `build.sh` also needs ffprobe. The titles in `titles/`,
-the gallery montage and the end card were rendered from `film/titles.html`
-with the site's own fonts and coffee-painting engine.
+They need ffmpeg (`build.sh` also needs ffprobe) and the Python ones need
+Pillow. `build.sh` writes the master and a lighter `-web.mp4` copy; the site
+serves the web copy as `media/cafe-studio-film.mp4`.

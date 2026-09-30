@@ -1,7 +1,6 @@
 /* Cafe Studio: the site.
-   A fixed stage holds the paper, the coffee splashes (multiplied onto the
-   paper), the gallery wall, Hannah's painting as it is rebuilt (WebGL) and
-   the café and brush footage (WebGL). The story scrolls over it in worlds:
+   A fixed stage holds the paper, the gallery wall, Hannah's painting as it
+   is rebuilt (WebGL) and the café and brush footage (WebGL). The story scrolls over it in worlds:
    the café, the medium, the palette, the brush, the process, the
    collection, a walk through her frames, up close, at home, then the night
    café. */
@@ -71,25 +70,6 @@ body {
   box-shadow: 0 30px 60px -28px rgba(42, 26, 16, 0.6);
 }
 .stage-reel, .stage-reel-still { opacity: 0; }
-/* splashes filmed on white: multiplied, only the coffee shows on the paper */
-.stage-fx video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  mix-blend-mode: multiply;
-  opacity: 0;
-}
-.stage-fx .fx-click { inset: auto; object-fit: contain; }
-/* the first splash flies in low and to the right, clear of the words */
-.stage-fx [data-fx="medium"] {
-  transform: translate(18%, 22%) scale(0.9);
-  /* its left side now sits on the page, so it fades out there */
-  -webkit-mask-image: linear-gradient(90deg, transparent 2%, #000 24%);
-  mask-image: linear-gradient(90deg, transparent 2%, #000 24%);
-}
-@media (max-width: 700px) { .stage-fx [data-fx="medium"] { transform: translate(8%, 34%) scale(1.1); } }
 .stage-reel-still { background: var(--espresso); }
 .stage-reel-still img {
   position: absolute;
@@ -215,7 +195,7 @@ main, .sheet { position: relative; z-index: 1; }
 
 /* the café, through her eyes */
 
-.w-reel { height: 640vh; }
+.w-reel { height: 560vh; }
 .hero {
   position: absolute;
   left: var(--gut);
@@ -414,7 +394,7 @@ main, .sheet { position: relative; z-index: 1; }
 
 /* the brush */
 
-.w-brush { height: 460vh; }
+.w-brush { height: 380vh; }
 .brush-cue {
   position: absolute;
   right: var(--gut);
@@ -433,7 +413,7 @@ main, .sheet { position: relative; z-index: 1; }
 
 /* step inside: a walk through her frames */
 
-.w-through { height: 760vh; background: var(--wall-deep); }
+.w-through { height: 640vh; background: var(--wall-deep); }
 .through-pin {
   color: var(--milk);
   background: radial-gradient(120% 90% at 50% 45%, #2d3f3c 0%, var(--wall) 45%, var(--wall-deep) 100%);
@@ -473,6 +453,8 @@ main, .sheet { position: relative; z-index: 1; }
   text-align: center;
 }
 .tf-t { font: 400 1.35rem/1.15 var(--f-display); }
+/* on a phone the caption keeps to the frame's width, so a long title wraps */
+@media (max-width: 700px) { .tf-cap { left: 0; right: 0; } }
 .tf-s { color: var(--crema); font: 500 0.66rem/1.4 var(--f-mono); letter-spacing: 0.14em; text-transform: uppercase; }
 .through-head {
   position: absolute;
@@ -498,7 +480,7 @@ main, .sheet { position: relative; z-index: 1; }
 .w-ring {
   display: grid;
   gap: 70vh;
-  padding: 55vh var(--gut) 40vh;
+  padding: 45vh var(--gut) 25vh;
 }
 .beat { max-width: 27rem; }
 .beat h2 {
@@ -527,7 +509,7 @@ main, .sheet { position: relative; z-index: 1; }
 
 /* the palette */
 
-.w-strength { height: 320vh; }
+.w-strength { height: 200vh; }
 .w-strength .pin {
   display: flex;
   flex-direction: column;
@@ -607,7 +589,7 @@ main, .sheet { position: relative; z-index: 1; }
 
 /* the process */
 
-.w-layers { padding: 70vh var(--gut) 100vh; }
+.w-layers { padding: 70vh var(--gut) 70vh; }
 .card {
   position: relative;
   max-width: 25rem;
@@ -635,8 +617,8 @@ main, .sheet { position: relative; z-index: 1; }
 }
 .steps {
   display: grid;
-  gap: 85vh;
-  margin: 85vh 0 0;
+  gap: 70vh;
+  margin: 70vh 0 0;
   padding: 0;
   list-style: none;
 }
@@ -659,7 +641,7 @@ main, .sheet { position: relative; z-index: 1; }
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
-.finish { margin: 85vh 0 0 auto; --tilt: 0.5deg; }
+.finish { margin: 70vh 0 0 auto; --tilt: 0.5deg; }
 .finish-line { font: 400 1.45rem/1.25 var(--f-display); }
 
 /* the collection */
@@ -807,7 +789,7 @@ main, .sheet { position: relative; z-index: 1; }
 
 /* up close */
 
-.w-close { height: 460vh; background: var(--espresso); }
+.w-close { height: 420vh; background: var(--espresso); }
 .close-pin { color: var(--milk); background: var(--espresso); }
 .close-dev, .close-stills, .close-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
 .close-stills img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; }
@@ -1280,17 +1262,6 @@ main, .sheet { position: relative; z-index: 1; }
   .v-art canvas, .v-art img { max-height: 52vh; }
 }
 
-/* ---------- touches ---------- */
-
-.drop-fx {
-  position: fixed;
-  z-index: 0;
-  pointer-events: none;
-  mix-blend-mode: multiply;
-  transition: opacity 1.8s ease 1.6s;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .cue i::after, .night-edge svg, .home-light i { animation: none; }
-  .drop-fx { transition: none; }
 }

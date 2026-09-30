@@ -2,17 +2,21 @@
 
    The page opens in the café as Hannah sees it: macro loops of crema,
    steam and light, one spreading into the next like coffee on paper, until
-   the last one clears to the sheet and leaves a ring. A splash of coffee
-   flies across the paper, the ring blooms and the palette appears, and
-   sheets of paper tumble through a splash into the brush: her three steps,
-   filmed up close and scrubbed by the scroll. Then one of her paintings
-   comes back together on the paper, wash by wash, coffee erupts behind it,
-   and it is framed and hung on the gallery wall with the rest of her work.
-   From the wall you walk through her frames, one after another, into her
-   close-ups; her kitchen photos drift by in morning light, and the lights
-   go down in the night café, where she tells her story. Everything on the
-   stage is a function of scroll position, so it plays the same forwards
-   and backwards. */
+   the last one clears to the sheet and leaves a ring. The ring blooms into
+   the palette, and her three steps with the brush, filmed up close, move
+   with the scroll. Then one of her paintings comes back together on the
+   paper, wash by wash, and is framed and hung on the gallery wall with the
+   rest of her work. From the wall you walk through her frames, one after
+   another, into her close-ups; her kitchen photos drift by in morning
+   light, and the lights go down in the night café, where she tells her
+   story.
+
+   Everything on the stage is a function of scroll position, so it plays
+   the same forwards and backwards. The stage follows the scroll with a
+   short glide, so a turn of the wheel moves it smoothly, and every chapter
+   has beats (a line written, a painting in the middle of the wall, a frame
+   at arm's length) that the page settles on when the reader stops near
+   one. */
 (function () {
   "use strict";
 
@@ -409,7 +413,7 @@
   if (!motion) doc.classList.add("reel-still-mode");
   // where each move to the next loop starts (share of the section), and
   // where on screen each stain starts
-  var MOVES = [0.12, 0.31, 0.5, 0.68], MOVE = 0.1, CLEAR0 = 0.88, CLEAR1 = 0.98;
+  var MOVES = [0.09, 0.28, 0.47, 0.66], MOVE = 0.1, CLEAR0 = 0.85, CLEAR1 = 0.95;
   var FROM = [[0.5, 0.6], [0.26, 0.38], [0.74, 0.6], [0.5, 0.45]];
   var BLOOM = clips.length - 1, bloomOn = false;
 
@@ -523,8 +527,10 @@
   var brushMotion = brushReel.ok && !reduce;
   // each clip's stretch of the section, where the next spreads over it,
   // and where each stain starts
-  var BSPAN = [[0.06, 0.42], [0.34, 0.7], [0.62, 0.97]], BMOVES = [0.34, 0.62], BMOVE = 0.08;
+  var BSPAN = [[0.02, 0.42], [0.34, 0.7], [0.62, 0.97]], BMOVES = [0.34, 0.62], BMOVE = 0.08;
   var BFROM = [[0.5, 0.55], [0.3, 0.5], [0.72, 0.45]];
+  // where each line is fully written
+  var BHOLDS = [[0.06, 0.32], [0.43, 0.61], [0.71, 0.88]];
   // where the brush is already in shot in each clip, in seconds
   var BIN = [0.9, 0.2, 1.5];
 
@@ -549,87 +555,26 @@
       cur = i + 1;
     }
     var next = mix > 0 ? cur + 1 : -1;
-    var reveal = y >= secBrush._top ? smooth(0, 0.07, p) : 0, clear = smooth(0.9, 0.975, p);
+    // it rises into view from the bottom of the screen as the palette leaves
+    var reveal = smooth(-0.75, 0.04, (y - secBrush._top) / vh), clear = smooth(0.9, 0.975, p);
     var live = reveal > 0 && clear < 1;
     for (i = 0; i < brushClips.length; i++) scrub(brushClips[i], (p - BSPAN[i][0]) / (BSPAN[i][1] - BSPAN[i][0]), BIN[i]);
     var drawn = false;
     if (live && brushMotion) {
-      drawn = brushReel.draw({ a: brushClips[cur], b: next >= 0 ? brushClips[next] : null, mix: ease(mix), from: BFROM[cur],
+      drawn = brushReel.draw({ a: brushClips[cur], b: next >= 0 ? brushClips[next] : null, mix: ease(mix), from: reveal < 1 ? [0.5, 1.15] : BFROM[cur],
         reveal: reveal, clear: clear, stir: [stir.x, stir.y], swirl: stir.s * 0.7, time: now / 1000, zoom: 1.03, seed: 7.1 + cur * 1.3 });
     }
     setO(brushC, drawn ? 1 : 0);
     for (i = 0; i < brushStills.length; i++) setO(brushStills[i], i === cur ? 1 : i === next ? smooth(0.2, 0.8, mix) : 0);
     setO(brushStill, live && !drawn ? Math.min(reveal, 1 - clear) : 0);
-    var holds = [[0.1, 0.33], [0.43, 0.61], [0.71, 0.88]];
     for (i = 0; i < brushLines.length; i++) {
-      var o = smooth(holds[i][0] - 0.02, holds[i][0] + 0.03, p) * (1 - smooth(holds[i][1] - 0.02, holds[i][1] + 0.01, p));
+      var o = smooth(BHOLDS[i][0] - 0.02, BHOLDS[i][0] + 0.03, p) * (1 - smooth(BHOLDS[i][1] - 0.02, BHOLDS[i][1] + 0.01, p));
       setO(brushLines[i], o);
       brushLines[i].style.transform = "translate3d(0," + ((1 - o) * 24).toFixed(1) + "px,0)";
     }
-    setO(brushCue, smooth(0.08, 0.12, p) * (1 - smooth(0.24, 0.3, p)));
-    return live && reveal > 0.6 && clear < 0.35;
-  }
-
-  /* ---------- coffee splashes ---------- */
-
-  // Splashes filmed on white, multiplied onto the paper so only the coffee
-  // shows. Each one plays once when its moment comes and stays on the paper
-  // until its world scrolls away; scrolling back above it puts it back.
-  var fxEls = {};
-  slice(document.querySelectorAll("#fx video[data-fx]")).forEach(function (v) { fxEls[v.getAttribute("data-fx")] = v; });
-  function fxWarm(name) {
-    var v = fxEls[name];
-    if (v && v.preload !== "auto" && !reduce) v.preload = "auto";
-  }
-  function fxAt(name, on, o) {
-    var v = fxEls[name];
-    if (!v) return;
-    if (reduce) { setO(v, 0); return; }
-    if (on && !v._on) {
-      v._on = true;
-      fxWarm(name);
-      try { v.currentTime = 0; } catch (e) { /* not loaded yet */ }
-      var pr = v.play();
-      if (pr && pr.catch) pr.catch(function () { v._on = false; });
-    } else if (!on && v._on) {
-      v._on = false;
-      v.pause();
-    }
-    setO(v, on ? o : 0);
-  }
-  function updateFx(y, built) {
-    // as the café clears, a splash flies across the fresh paper
-    var inRing = (y + vh - secRing._top) / vh;
-    if (inRing > -1) fxWarm("medium");
-    fxAt("medium", inRing > 0.35 && y < secStr._top, 1 - smooth(secRing._top + secRing._h * 0.25, secRing._top + secRing._h * 0.55, y));
-    // sheets of paper tumble through a splash on the way to the brush
-    var pS = pinP(secStr, y);
-    if (pS > 0.4) fxWarm("palette");
-    fxAt("palette", pS > 0.8 && y < secBrush._top + secBrush._h * 0.3, 1);
-    // the finished painting: coffee erupts behind it
-    if (built > 3) fxWarm("finish");
-    fxAt("finish", built >= 3.97 && y < secGal._top + vh * 0.25, 1 - smooth(secGal._top - vh * 0.2, secGal._top + vh * 0.2, y));
-  }
-
-  // A tap on the paper throws a splash of coffee under the finger.
-  var crown = $("#fx .fx-click");
-  function splashAt(x, y) {
-    if (!crown || reduce) return;
-    crown.preload = "auto";
-    var sz = Math.min(vw, vh) * 0.55;
-    crown.style.width = crown.style.height = sz.toFixed(0) + "px";
-    crown.style.left = (x - sz / 2).toFixed(0) + "px";
-    crown.style.top = (y - sz / 2).toFixed(0) + "px";
-    crown.style.transition = "none";
-    setO(crown, 1);
-    try { crown.currentTime = 0; } catch (e) { /* not loaded yet */ }
-    var pr = crown.play();
-    if (pr && pr.catch) pr.catch(function () { setO(crown, 0); });
-    clearTimeout(crown._t);
-    crown._t = setTimeout(function () {
-      crown.style.transition = "opacity 1.4s ease";
-      setO(crown, 0);
-    }, 3600);
+    setO(brushCue, smooth(0.05, 0.09, p) * (1 - smooth(0.26, 0.31, p)));
+    // dark once the footage has the top of the screen to itself
+    return live && reveal > 0.6 && clear < 0.35 && y > secBrush._top - vh * 0.08;
   }
 
   /* ---------- step inside ---------- */
@@ -662,6 +607,10 @@
     return { w: w, fig: fig, im: im, cap: cap, side: i % 2 ? 1 : -1, key: "", hole: "" };
   });
   if (reduce) doc.classList.add("tunnel-flat");
+  // the camera starts in front of the first frame and ends inside the last
+  var CAM0 = -1.15, CAM1 = tfs.length - 1 + 0.18;
+  // where frame i hangs close, whole and captioned
+  function frameAt(i) { return (i - 0.22 - CAM0) / (CAM1 - CAM0); }
 
   function layoutTunnel() {
     tfs.forEach(function (t) {
@@ -673,7 +622,7 @@
 
   function updateThrough(y) {
     if (reduce || y + vh < secThrough._top || y > secThrough._top + secThrough._h) return;
-    var p = pinP(secThrough, y), n = tfs.length, cam = lerp(-1.15, n - 1 + 0.18, p);
+    var p = pinP(secThrough, y), n = tfs.length, cam = lerp(CAM0, CAM1, p);
     setO(throughHead, 1 - smooth(0.015, 0.08, p));
     for (var i = 0; i < n; i++) {
       var t = tfs[i], r = i - cam, last = i === n - 1;
@@ -694,14 +643,14 @@
       }
       setO(t.fig, o);
       // passing through: the painting opens from the middle, like a wet wash
-      var hole = last ? -40 : lerp(-40, 120, smooth(1.55, 3.4, s));
+      var hole = last ? -40 : lerp(-40, 120, smooth(1.7, 3.4, s));
       var hk = hole <= -40 ? "" : hole.toFixed(1) + "%";
       if (hk !== t.hole) {
         t.fig.classList.toggle("opening", !!hk);
         if (hk) t.fig.style.setProperty("--h", hk);
         t.hole = hk;
       }
-      setO(t.cap, smooth(0.3, 0.46, s) * (1 - smooth(1.05, 1.45, s)));
+      setO(t.cap, smooth(0.3, 0.46, s) * (1 - smooth(1.34, 1.7, s)));
     }
   }
 
@@ -870,6 +819,116 @@
     });
   }
 
+  /* ---------- the beats ---------- */
+
+  // Each chapter has moments where everything is in place: a line fully
+  // written, a painting in the middle of the wall, a frame at arm's length.
+  // When the reader stops scrolling, the page glides on to the next beat
+  // in the direction they were going, or back to one they have only just
+  // passed, so one turn of the wheel or one swipe is one step of the story.
+  // It never pulls back to where a scroll started, so it cannot hold anyone
+  // in place, and it lets go at the first touch, turn of the wheel or key.
+  // Hannah's story and the enquiry form at the end scroll freely.
+  var beatYs = [];
+
+  function atPin(sec, p) { return sec._top + p * Math.max(1, sec._h - vh); }
+  function atCentre(e) {
+    var r = e.getBoundingClientRect();
+    return r.top + window.scrollY + r.height / 2 - vh / 2;
+  }
+
+  function beats() {
+    var ys = [], i;
+    // the café: the title, each line, then the ring left on clean paper
+    ys.push(atPin(secReel, 0));
+    for (i = 0; i < MOVES.length; i++) ys.push(atPin(secReel, (MOVES[i] + MOVE + (i + 1 < MOVES.length ? MOVES[i + 1] : CLEAR0)) / 2));
+    ys.push(atPin(secReel, 1));
+    // her two notes on the medium, every tone of the palette, each step with the brush
+    slice(secRing.querySelectorAll(".beat")).forEach(function (b) { ys.push(atCentre(b)); });
+    ys.push(atPin(secStr, 0.62));
+    BHOLDS.forEach(function (h) { ys.push(atPin(secBrush, (h[0] + h[1]) / 2)); });
+    // each note on the process, with its layer down
+    ys.push(atCentre($(".process-head")));
+    stepEls.forEach(function (e) { ys.push(atCentre(e)); });
+    ys.push(atCentre($(".finish")));
+    // the painting hung, then each painting on the wall in the middle of the screen
+    var run = trackLen / TRAVEL, far = 0;
+    ys.push(secGal._top + hangLen);
+    frames.forEach(function (f) {
+      var d = (f.x0 + trackShift - vw / 2) / TRAVEL;
+      if (d > 8 && d <= run) ys.push(secGal._top + hangLen + d);
+      far = Math.max(far, d);
+    });
+    // and the end of the wall, if the last painting is too near it to reach the middle
+    if (far > run + 8) ys.push(secGal._top + hangLen + run);
+    // through the frames, each one at arm's length
+    if (!reduce) {
+      ys.push(atPin(secThrough, 0));
+      for (i = 0; i < tfs.length; i++) ys.push(atPin(secThrough, frameAt(i)));
+    }
+    // each close-up at its closest, then the kitchen
+    ys.push(atPin(secClose, 0));
+    for (i = 0; i < closeShots.length; i++) ys.push(atPin(secClose, (i ? i + 0.5 : 0.75) / closeShots.length));
+    // the kitchen, with its photos level (its note is sticky, so the middle of the section)
+    ys.push(secHome._top + secHome._h / 2 - vh / 2);
+    return ys;
+  }
+
+  function layoutBeats() {
+    var max = document.documentElement.scrollHeight - vh;
+    beatYs = reduce ? [] : beats().map(function (y) { return Math.round(clamp(y, 0, max)); }).sort(function (a, b) { return a - b; });
+  }
+
+  var restY = window.scrollY, lastMove = 0, lastRy = -1, touching = false, settle = null, jumped = false;
+  // the reader takes over mid-glide: their scroll starts from here
+  function letGo() {
+    if (settle) restY = window.scrollY;
+    settle = null;
+  }
+  ["wheel", "keydown", "pointerdown"].forEach(function (t) { window.addEventListener(t, letGo, { passive: true }); });
+  window.addEventListener("touchstart", function () { touching = true; letGo(); }, { passive: true });
+  window.addEventListener("touchend", function () { touching = false; }, { passive: true });
+  window.addEventListener("touchcancel", function () { touching = false; }, { passive: true });
+  // a chapter link lands on the top of its section: carry on to its first beat
+  document.addEventListener("click", function (ev) {
+    if (ev.target.closest && ev.target.closest('a[href^="#"]')) jumped = true;
+  });
+
+  // where to settle from ry, after a scroll that started at restY
+  function beatFor(ry) {
+    var dir = ry > restY ? 1 : ry < restY ? -1 : 0, i, b, ahead = null, passed = null;
+    if (!dir) return null;
+    for (i = 0; i < beatYs.length; i++) {
+      b = beatYs[i];
+      if (Math.abs(b - ry) <= 2) return null;             // already on one
+      if ((b - ry) * dir > 0) { if (ahead === null || Math.abs(b - ry) < Math.abs(ahead - ry)) ahead = b; }
+      else if ((b - restY) * dir > 2 && (passed === null || Math.abs(b - ry) < Math.abs(passed - ry))) passed = b;
+    }
+    if (ahead !== null && Math.abs(ahead - ry) > vh * 2.9) ahead = null;
+    if (passed !== null && Math.abs(passed - ry) > vh * 0.35) passed = null;
+    if (ahead === null) return passed;
+    if (passed === null) return ahead;
+    return Math.abs(passed - ry) < Math.abs(ahead - ry) ? passed : ahead;
+  }
+
+  function settleStep(ry, now) {
+    if (ry !== lastRy) { lastRy = ry; lastMove = now; }
+    if (settle) {
+      var t = clamp((now - settle.t0) / settle.d, 0, 1), to = Math.round(lerp(settle.from, settle.to, ease(t)));
+      if (to !== ry) window.scrollTo(0, to);
+      if (t >= 1) { restY = settle.to; settle = null; }
+      return;
+    }
+    if (touching || now - lastMove < 170 || ry === restY || !beatYs.length) return;
+    // not in a dialog, and not once the reader is into Hannah's story
+    if ((viewer && viewer.open) || (film && film.open) || ry > secNight._top - vh * 0.5) { restY = ry; return; }
+    if (jumped) { restY = ry - 1; jumped = false; }
+    var to = beatFor(ry);
+    if (to === null) { restY = ry; return; }
+    var dist = Math.abs(to - ry) / vh;
+    settle = { from: ry, to: to, t0: now, d: 300 + 360 * Math.min(2.6, dist) };
+  }
+
   /* ---------- the frame loop ---------- */
 
   var currentWorld = "reel";
@@ -887,9 +946,27 @@
     return "sheet";
   }
 
+  // The stage follows the scroll a fraction of a second behind, so a turn
+  // of the wheel glides instead of jumping. A jump across the page (the
+  // rail, a link) is taken at once.
+  var sy = -1, lastNow = 0;
+  function glide(ry, now) {
+    var dt = lastNow ? Math.min(64, now - lastNow) : 16;
+    lastNow = now;
+    if (reduce || sy < 0 || Math.abs(ry - sy) > vh * 2.5) sy = ry;
+    else {
+      sy += (ry - sy) * (1 - Math.exp(-dt / 90));
+      if (Math.abs(ry - sy) < 0.3) sy = ry;
+    }
+    return sy;
+  }
+
   function tick(now) {
     requestAnimationFrame(tick);
-    var y = window.scrollY;
+    var ry = window.scrollY;
+    settleStep(ry, now);
+    ry = window.scrollY;
+    var y = glide(ry, now);
     mouse.x = lerp(mouse.x, mouse.tx, 0.05);
     mouse.y = lerp(mouse.y, mouse.ty, 0.05);
 
@@ -899,9 +976,9 @@
     var pr = smooth(-0.2, 0.55, centreP(secRing, y));
     var pS = pinP(secStr, y);
     // the stain becomes the palette: the ring fades as the swatches bloom
-    drawPaper(pr, 1 - 0.78 * smooth(0.02, 0.4, pS), 1 - smooth(0.02, 0.32, pS));
+    drawPaper(pr, 1 - 0.78 * smooth(0, 0.3, pS), 1 - smooth(0, 0.26, pS));
     for (var i = 0; i < swatchEls.length; i++) {
-      var t = smooth(0.06 + i * 0.09, 0.2 + i * 0.09, pS), c = swatchEls[i];
+      var t = smooth(0.02 + i * 0.07, 0.16 + i * 0.07, pS), c = swatchEls[i];
       setO(c, t);
       var tf = t < 1 ? "scale(" + lerp(0.55, 1, ease(t)).toFixed(3) + ") rotate(" + ((1 - t) * -10).toFixed(2) + "deg)" : "";
       if (c._tf !== tf) { c.style.transform = tf; c._tf = tf; }
@@ -909,7 +986,6 @@
 
     var pcL = centreP(secLay, y);
     var e = updateGallery(y, pcL);
-    updateFx(y, buildAt(vw < 700 ? (y + vh * 0.8 - secLay._top) / secLay._h : pcL));
     updateThrough(y);
     updateClose(y);
     updateHome(y);
@@ -919,12 +995,12 @@
     var inGallery = y >= secGal._top - vh && y < secThrough._top;
     sway(y, inGallery && e >= 1);
 
-    var world = worldAt(y + vh / 2);
+    var world = worldAt(ry + vh / 2);
     if (world !== currentWorld) {
       currentWorld = world;
       railLinks.forEach(function (a) { a.classList.toggle("on", a.getAttribute("data-for") === world); });
     }
-    var top = worldAt(y + 40), tone = "light";
+    var top = worldAt(ry + 40), tone = "light";
     if (top === "reel") tone = reelDark ? "dark" : "light";
     else if (top === "brush" || top === "strength") tone = brushDark ? "dark" : "light";
     else if (top === "through") tone = "dark";
@@ -934,31 +1010,13 @@
     if (doc.getAttribute("data-top") !== top) doc.setAttribute("data-top", top);
   }
 
-  /* ---------- touches ---------- */
-
-  // Tap the paper and coffee splashes there, leaving a drop behind.
-  document.addEventListener("click", function (ev) {
-    if (reduce || !(currentWorld === "ring" || currentWorld === "strength" || currentWorld === "layers")) return;
-    if (ev.target.closest && ev.target.closest("a, button, input, textarea, select, label, .card, .beat, .strength-head, .swatches, dialog")) return;
-    splashAt(ev.clientX, ev.clientY);
-    var size = 180, k = Math.min(window.devicePixelRatio || 1, 2), n = size * k;
-    var c = B.sheet(n, n), ctx = c.getContext("2d"), r = B.rng((Math.random() * 1e9) | 0), u = k * 0.6;
-    B.wash(ctx, B.ellipse(n / 2, n / 2, 15 * k, 14 * k, 12, r), r, { s: 0.45 + r() * 0.35, layers: 8, alpha: 0.16, baseVar: 0.45, depth: 2, spread: 0.3, rim: 2.2, u: u });
-    B.drops(ctx, r, n / 2, n / 2, 28 * k, 7, { u: u, s: 0.6 });
-    c.className = "drop-fx";
-    c.style.width = c.style.height = size + "px";
-    c.style.left = (ev.clientX - size / 2) + "px";
-    c.style.top = (ev.clientY - size / 2) + "px";
-    document.body.appendChild(c);
-    requestAnimationFrame(function () { requestAnimationFrame(function () { c.style.opacity = "0"; }); });
-    setTimeout(function () { if (c.parentNode) c.parentNode.removeChild(c); }, 4000);
-  });
+  /* ---------- shortcuts ---------- */
 
   // "Work" skips the hanging and lands on the wall.
   Array.prototype.forEach.call(document.querySelectorAll('a[href="#work"]'), function (a) {
     a.addEventListener("click", function (ev) {
       ev.preventDefault();
-      window.scrollTo({ top: secGal._top + hangLen + 2, behavior: reduce ? "auto" : "smooth" });
+      window.scrollTo({ top: secGal._top + hangLen, behavior: reduce ? "auto" : "smooth" });
     });
   });
 
@@ -1104,6 +1162,7 @@
     layoutHome();
     layoutTunnel();
     cache();
+    layoutBeats();
     paperKey = "";
   }
   window.addEventListener("resize", function () {
@@ -1122,10 +1181,11 @@
   layoutHome();
   layoutTunnel();
   cache();
+  layoutBeats();
   buildPaper();
   if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(function () { layoutGallery(); cache(); sheetPainted = false; });
+    document.fonts.ready.then(function () { layoutGallery(); cache(); layoutBeats(); sheetPainted = false; });
   }
-  window.addEventListener("load", function () { layoutGallery(); cache(); });
+  window.addEventListener("load", function () { layoutGallery(); cache(); layoutBeats(); });
   requestAnimationFrame(tick);
 })();

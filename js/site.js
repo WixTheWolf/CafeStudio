@@ -426,12 +426,26 @@
     var v = o.toFixed(3);
     if (e._o !== v) { e.style.opacity = v; e._o = v; }
   }
+  // Ask a loop to play once; if the browser refuses (some phones do, in
+  // low power mode), it waits on its first frame until the next tap.
   function play(v, on) {
     if (on) {
       if (v.preload !== "auto") v.preload = "auto";
-      if (v.paused && motion) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () { /* stays on its poster */ }); }
-    } else if (!v.paused) v.pause();
+      if (v.paused && motion && !v._asked) {
+        v._asked = true;
+        var pr = v.play();
+        if (pr && pr.then) pr.then(function () { v._asked = false; }, function () { /* until a tap */ });
+        else v._asked = false;
+      }
+    } else {
+      v._asked = false;
+      if (!v.paused) v.pause();
+    }
   }
+  function nudge() {
+    clips.forEach(function (v) { if (v._want && v.paused) { v._asked = false; play(v, true); } });
+  }
+  ["pointerdown", "touchend", "keydown"].forEach(function (t) { window.addEventListener(t, nudge, { passive: true }); });
 
   function updateReel(y, now) {
     var p = pinP(secReel, y), inView = y < secReel._top + secReel._h;
@@ -449,7 +463,8 @@
     if (bloomIn && !bloomOn) { try { clips[BLOOM].currentTime = 0; } catch (e) { /* not loaded */ } }
     bloomOn = bloomIn;
     for (i = 0; i < clips.length; i++) {
-      play(clips[i], live && (i === cur || i === next));
+      clips[i]._want = live && (i === cur || i === next);
+      play(clips[i], clips[i]._want);
       if (live && i === cur + 1 && clips[i].preload !== "auto") clips[i].preload = "auto";
     }
 

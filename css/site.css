@@ -322,7 +322,8 @@ main, .sheet { position: relative; z-index: 1; }
   100% { transform: translateY(68px); opacity: 0; }
 }
 
-.reel-lines { margin: 0; padding: 0; list-style: none; }
+/* the lines over the loops are only to read: taps go through to the buttons */
+.reel-lines { margin: 0; padding: 0; list-style: none; pointer-events: none; }
 .reel-line {
   position: absolute;
   left: var(--gut);
@@ -383,6 +384,7 @@ main, .sheet { position: relative; z-index: 1; }
   stroke-linecap: round;
 }
 .js .pencil { opacity: 0; }
+.pencil { pointer-events: none; }
 
 @media (max-width: 760px) {
   .reel-line { bottom: 12vh; }

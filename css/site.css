@@ -339,11 +339,12 @@ main, .sheet { position: relative; z-index: 1; }
   top: -45%;
   bottom: -45%;
   z-index: -1;
-  background: radial-gradient(closest-side, rgba(20, 11, 6, 0.55), rgba(20, 11, 6, 0.25) 60%, rgba(20, 11, 6, 0));
+  background: radial-gradient(closest-side, rgba(20, 11, 6, 0.68), rgba(20, 11, 6, 0.34) 60%, rgba(20, 11, 6, 0));
 }
 .reel-k {
   margin: 0 0 18px;
-  color: var(--crema);
+  color: #f0c68e;
+  text-shadow: 0 1px 12px rgba(12, 6, 3, 0.7);
   font: 500 0.72rem/1 var(--f-mono);
   letter-spacing: 0.24em;
   text-transform: uppercase;

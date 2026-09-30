@@ -404,7 +404,7 @@
   if (!motion) doc.classList.add("reel-still-mode");
   // where each move to the next loop starts (share of the section), and
   // where on screen each stain starts
-  var MOVES = [0.12, 0.31, 0.5, 0.68], MOVE = 0.1, CLEAR0 = 0.85, CLEAR1 = 0.97;
+  var MOVES = [0.12, 0.31, 0.5, 0.68], MOVE = 0.1, CLEAR0 = 0.88, CLEAR1 = 0.98;
   var FROM = [[0.5, 0.6], [0.26, 0.38], [0.74, 0.6], [0.5, 0.45]];
   var BLOOM = clips.length - 1, bloomOn = false;
 
@@ -474,7 +474,7 @@
     setO(barMark, 1 - heroO);
     for (i = 0; i < reelLines.length; i++) {
       var h0 = MOVES[i] + MOVE, h1 = i + 1 < MOVES.length ? MOVES[i + 1] : CLEAR0;
-      var o = smooth(h0 - 0.01, h0 + 0.04, p) * (1 - smooth(h1 - 0.03, h1 + 0.01, p));
+      var o = smooth(h0 - 0.01, h0 + 0.03, p) * (1 - smooth(h1 - 0.02, h1 + 0.01, p));
       setO(reelLines[i], o);
       reelLines[i].style.transform = "translate3d(0," + ((1 - o) * 24).toFixed(1) + "px,0)";
     }

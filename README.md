@@ -7,7 +7,7 @@ Three pages, one static site with no build step and no dependencies:
 | Page | File | What it is |
 | --- | --- | --- |
 | Site | `index.html` | The scroll. A cup of coffee pulls back and lifts, leaves its ring, and the ring blooms into the palette. Hannah's *Bean Up For Hours* then comes back together on the paper, wash by wash, and is hung on the gallery wall with her six series. Her close-ups fill the screen, her kitchen photos drift by in morning light, and the night café tells her story and takes enquiries. |
-| Deck | `deck.html` | A 13-slide 16:9 deck: statement, the artist, the medium, the process, the six series on the gallery wall, close-ups, and what to know about collecting. Arrow keys, space, tap or swipe to move; `N` for speaker notes; `F` for full screen; link a slide as `deck#s5`. |
+| Deck | `deck.html` | A 16-slide 16:9 deck: the film, statement, the artist, the medium, the process, the six series on the gallery wall with sizes and prices, close-ups, what to know about collecting, and the price list. Arrow keys, space, tap or swipe to move; `N` for speaker notes; `F` for full screen; link a slide as `deck#s5`. |
 | Preread | `preread.html` | A five-minute read to send before a meeting. Follows light and dark mode, prints cleanly. |
 
 ## Editing the content
@@ -42,16 +42,14 @@ the gallery until a photo is added.
 
 The collection is 21 pieces across six series (Cool Beans 7, Pairs Well
 With 5, My Coach and a Coffee 3, Golden Hour 3, Coffee Makers 2, Coffee
-Houses 1). Each series' `count` in `js/studio.js` is its full size, and
-every page notes how many pieces in a series are still waiting on a
-photo, so the totals stay right while photos come in.
+Houses 1), and every one is photographed.
 
-Photographed so far: 18. Still to add: three pieces that are not in the
-Drive, one each in Cool Beans, Golden Hour and Coffee Houses.
-
-Series membership was matched from the paintings themselves (A Pleasant
-Pause, macarons beside a cup, is in Pairs Well With); check it against
-Hannah's list.
+Each work also carries its `size` and `mat` in inches and its `price` in US
+dollars, from Hannah's list. The site shows them on every placard and in
+the viewer, the deck under every piece and on a price-list slide, and the
+preread in its plate captions and price table. A work without a `price`
+shows "Price on request": You've Bean Amazing, Spill the Beans and It's
+Bean Real are still waiting on theirs.
 
 ## How the animation works
 

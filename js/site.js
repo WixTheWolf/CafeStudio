@@ -89,7 +89,7 @@
     if (!ws.length) return;
     var g = el("optgroup");
     g.label = se.title;
-    ws.forEach(function (w) { var o = el("option", null, w.title); o.value = w.title; g.appendChild(o); });
+    ws.forEach(function (w) { var o = el("option", null, w.title + " · " + S.priceText(w)); o.value = w.title; g.appendChild(o); });
     picker.appendChild(g);
   });
   var idea = el("option", null, "An idea of my own");
@@ -128,7 +128,8 @@
     btn.appendChild(mould);
     var cap = el("figcaption", "placard");
     cap.appendChild(el("span", "pl-title", w.title));
-    cap.appendChild(el("span", "pl-meta", w.medium));
+    cap.appendChild(el("span", "pl-meta", S.sizeText(w)));
+    cap.appendChild(el("span", "pl-price", S.priceText(w)));
     fig.appendChild(btn);
     fig.appendChild(cap);
     track.appendChild(fig);
@@ -306,7 +307,7 @@
 
   // k: 0 as the process section comes onto the screen, 1 once it fills it
   function processRect(k) {
-    var mw = vw < 700 ? vw - 28 : Math.min(vw * 0.74, 1160), mh = vh * (vw < 700 ? 0.62 : 0.72);
+    var mw = vw < 700 ? vw - 28 : Math.min(vw * 0.74, 1160), mh = vh * (vw < 700 ? 0.5 : 0.72);
     var w = mw, h = w / feature.ratio;
     if (h > mh) { h = mh; w = h * feature.ratio; }
     var rise = (1 - ease(k)) * vh * 0.16;
@@ -534,7 +535,7 @@
   /* ---------- at home ---------- */
 
   // Kitchen photos drift past at different depths in morning light.
-  var homeWorks = S.hung().filter(function (w) { return w.homePhoto; });
+  var homeWorks = (S.atHome || []).map(S.work).filter(function (w) { return w && w.photo && w.homePhoto; });
   // left %, top % of the section, width in vw, turn, depth
   var SPOTS = [[4, 3, 22, -3, 0.9], [71, 1, 24, 2.5, 0.55], [76, 31, 18, -2, 1.35], [3, 35, 19, 2.6, 1.45], [38, 3, 15, 1.4, 1.7],
     [62, 57, 23, 1.8, 1.0], [5, 67, 22, -2.4, 0.6], [34, 80, 19, -1.2, 1.25], [79, 79, 16, -3, 1.55], [18, 52, 14, 2.2, 1.8]];
@@ -683,8 +684,9 @@
     var se = S.seriesOf(w.series);
     $("#v-title").textContent = w.title;
     $("#v-meta").textContent = se ? se.title : "Original";
-    $("#v-blurb").textContent = w.medium + ". An original, painted by hand with coffee.";
-    $("#v-note").textContent = "Sizing is included with each piece. Frames are for staging and are not included, and pricing does not include shipping.";
+    $("#v-blurb").textContent = w.medium + ", " + S.sizeText(w).replace(/^Size/, "size") + ". An original, painted by hand with coffee.";
+    $("#v-price").textContent = S.priceText(w);
+    $("#v-note").textContent = "Frames in the photos are for staging and are not included. Pricing does not include shipping.";
     art.innerHTML = "";
     thumbs.innerHTML = "";
     art.className = "v-art mount-" + w.mount;
@@ -761,7 +763,8 @@
       return;
     }
     err.hidden = true;
-    var about = general ? "" : (piece === "An idea of my own" ? "I have an idea for a piece of my own." : "I’m interested in “" + piece + "”.");
+    var chosen = S.works.filter(function (w) { return w.title === piece; })[0];
+    var about = general ? "" : (piece === "An idea of my own" ? "I have an idea for a piece of my own." : "I’m interested in “" + piece + "”" + (chosen && chosen.price ? " (" + S.priceText(chosen) + ")" : "") + ".");
     enquiry = "Hi Hannah,\n\n" + (about ? about + "\n\n" : "") + (msg ? msg + "\n\n" : "") + "Thanks,\n" + name + "\n" + email;
     $("#c-text").textContent = enquiry;
     var mail = $("#c-mail"), help = $("#c-help");

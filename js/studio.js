@@ -34,7 +34,7 @@ window.STUDIO = {
     note: "The natural texture of the coffee may vary, so each piece will have unique characteristics and thickness."
   },
   fyi: [
-    { title: "Pre-matted", text: "All pieces come pre-matted. Sizing information is included with each piece.", photo: "images/works/a-classic-breakfast-detail.jpg" },
+    { title: "Pre-matted", text: "Pieces on paper come pre-matted; the wood panels are unmatted. Size and price are listed with each piece.", photo: "images/works/a-classic-breakfast-detail.jpg" },
     { title: "Frames for staging", text: "Frames in the photos are used for staging and are not included in the purchase.", photo: "images/works/fresh-baked-home.jpg" },
     { title: "One of a kind", text: "The texture of the coffee varies, so every piece has its own character and thickness.", photo: "images/works/but-first-tabby-detail.jpg" },
     { title: "Shipping", text: "Pricing does not include shipping.", photo: "images/works/percolate-home.jpg" }
@@ -49,6 +49,10 @@ window.STUDIO = {
     { name: "Espresso",     s: 0.76 },
     { name: "Ristretto",    s: 0.96 }
   ],
+
+  // The home photos scattered through the site's "At home" section, in order.
+  atHome: ["bean-up-for-hours", "coffee-house", "its-bean-real", "fresh-baked", "every-last-crumb",
+    "sticky-honey-pancake-balls", "iced-americana", "not-just-a-dopio", "percolate", "full-body"],
 
   // The painting the site builds up as you scroll, one wash at a time. The
   // animation is made from the finished piece, so it ends as the photo.
@@ -77,29 +81,35 @@ window.STUDIO = {
 
   // mount: "matted" (photo shows the matted piece), "art" (the painting
   // itself), "panel" (a wood panel), "oval" (an oval wood panel).
+  // size is the painting in inches, mat the matted size (none on wood), and
+  // price is in US dollars; leave price out to show "Price on request".
   works: [
-    { slug: "bean-up-for-hours", title: "Bean Up For Hours", series: "cool-beans", mount: "art", ratio: 1.37, home: true },
-    { slug: "its-bean-a-while", title: "It’s Bean a While", series: "cool-beans", mount: "matted", ratio: 1.267 },
+    { slug: "bean-up-for-hours", title: "Bean Up For Hours", series: "cool-beans", mount: "art", ratio: 0.73, home: true, size: "9x12", mat: "11x14", price: 350 },
+    { slug: "its-bean-a-while", title: "It’s Bean a While", series: "cool-beans", mount: "matted", ratio: 1.267, detail: true, size: "5x7", mat: "8x10", price: 100 },
+    { slug: "bean-there-done-that", title: "Bean There, Done That", series: "cool-beans", mount: "matted", ratio: 1.26, home: true, size: "5x7", mat: "8x10", price: 100 },
+    { slug: "bean-thinking-of-you", title: "Bean Thinking of You", series: "cool-beans", mount: "matted", ratio: 1.244, detail: true, size: "5x7", mat: "8x10", price: 100 },
     { slug: "youve-bean-amazing", title: "You’ve Bean Amazing", series: "cool-beans", mount: "matted", ratio: 1.243, home: true },
     { slug: "spill-the-beans", title: "Spill the Beans", series: "cool-beans", mount: "matted", ratio: 0.742 },
     { slug: "its-bean-real", title: "It’s Bean Real", series: "cool-beans", mount: "matted", ratio: 1.107, home: true },
-    { slug: "bean-thinking-of-you", title: "Bean Thinking of You", series: "cool-beans", mount: "matted", ratio: 1.244 },
 
-    { slug: "the-perfect-pair", title: "The Perfect Pair", series: "pairs-well-with", mount: "art", ratio: 0.75 },
-    { slug: "fresh-baked", title: "Fresh Baked", series: "pairs-well-with", mount: "matted", ratio: 0.768, detail: true, home: true },
-    { slug: "every-last-crumb", title: "Every Last Crumb", series: "pairs-well-with", mount: "art", ratio: 1.333, home: true },
-    { slug: "sticky-honey-pancake-balls", title: "Sticky Honey Pancake Balls", series: "pairs-well-with", mount: "matted", ratio: 1.23, home: true },
-    { slug: "a-pleasant-pause", title: "A Pleasant Pause", series: "pairs-well-with", mount: "matted", ratio: 1.289, detail: true },
+    { slug: "the-perfect-pair", title: "The Perfect Pair", series: "pairs-well-with", mount: "art", ratio: 0.75, size: "5x7", mat: "8x10", price: 100 },
+    { slug: "fresh-baked", title: "Fresh Baked", series: "pairs-well-with", mount: "matted", ratio: 0.768, detail: true, home: true, size: "9x12", mat: "11x14", price: 300 },
+    { slug: "every-last-crumb", title: "Every Last Crumb", series: "pairs-well-with", mount: "art", ratio: 1.333, home: true, size: "7x10", mat: "11x12", price: 175 },
+    { slug: "sticky-honey-pancake-balls", title: "Sticky Honey Pancake Balls", series: "pairs-well-with", mount: "matted", ratio: 1.23, home: true, size: "5x7", mat: "8x10", price: 100 },
+    { slug: "a-pleasant-pause", title: "A Pleasant Pause", series: "pairs-well-with", mount: "matted", ratio: 1.289, detail: true, size: "5x7", mat: "8x10", price: 100 },
 
-    { slug: "but-first-tabby", title: "But First, Tabby", series: "coach", mount: "matted", ratio: 1.281, detail: true },
-    { slug: "a-classic-breakfast", title: "A Classic Breakfast", series: "coach", mount: "matted", ratio: 1.302, detail: true },
-    { slug: "breakfast-with-brooklyn", title: "Breakfast with Brooklyn", series: "coach", mount: "art", ratio: 0.667 },
+    { slug: "but-first-tabby", title: "But First, Tabby", series: "coach", mount: "matted", ratio: 1.281, detail: true, size: "9x12", mat: "11x14", price: 450 },
+    { slug: "a-classic-breakfast", title: "A Classic Breakfast", series: "coach", mount: "matted", ratio: 1.302, detail: true, size: "9x12", mat: "11x14", price: 450 },
+    { slug: "breakfast-with-brooklyn", title: "Breakfast with Brooklyn", series: "coach", mount: "art", ratio: 0.667, size: "9x12", mat: "11x14", price: 450 },
 
-    { slug: "iced-americana", title: "Iced Americana", series: "golden-hour", mount: "panel", ratio: 0.703, home: true },
-    { slug: "not-just-a-dopio", title: "Not Just a Dopio", series: "golden-hour", mount: "matted", ratio: 1.296, home: true },
+    { slug: "iced-americana", title: "Iced Americana", series: "golden-hour", mount: "panel", ratio: 0.703, home: true, size: "4.75x6.75", price: 150 },
+    { slug: "not-just-a-dopio", title: "Not Just a Dopio", series: "golden-hour", mount: "matted", ratio: 1.27, home: true, size: "5x7", mat: "8x10", price: 100 },
+    { slug: "full-body", title: "Full Body", series: "golden-hour", mount: "oval", ratio: 0.747, home: true, size: "4.75x6.75", price: 150 },
 
-    { slug: "percolate", title: "Percolate", series: "coffee-makers", mount: "matted", ratio: 0.787, home: true },
-    { slug: "full-body", title: "Full Body", series: "coffee-makers", mount: "oval", ratio: 0.747, home: true }
+    { slug: "percolate", title: "Percolate", series: "coffee-makers", mount: "matted", ratio: 0.787, home: true, size: "9x12", mat: "11x14", price: 350 },
+    { slug: "al-banco", title: "Al Banco", series: "coffee-makers", mount: "matted", ratio: 0.775, size: "9x12", mat: "11x14", price: 350 },
+
+    { slug: "coffee-house", title: "The Coffee House at Second and Bridge", series: "coffee-houses", mount: "art", ratio: 1.354, detail: true, home: true, size: "9x12", mat: "11x14", price: 450 }
   ]
 };
 
@@ -109,8 +119,22 @@ window.STUDIO = {
     if (w.photo === undefined) w.photo = "images/works/" + w.slug + ".jpg";
     w.detailPhoto = w.detail ? "images/works/" + w.slug + "-detail.jpg" : null;
     w.homePhoto = w.home ? "images/works/" + w.slug + "-home.jpg" : null;
-    w.medium = w.mount === "panel" || w.mount === "oval" ? "Coffee on wood panel" : "Coffee on paper, pre-matted";
+    w.wood = w.mount === "panel" || w.mount === "oval";
+    w.medium = w.mount === "oval" ? "Coffee on an oval wood panel" : w.wood ? "Coffee on a wood panel" : "Coffee on paper";
   });
+  // "9x12" -> "9 × 12 in"
+  function inches(s) { return s.split("x").join(" × ") + " in"; }
+  // The painting's size and how it comes: "9 × 12 in, matted to 11 × 14 in".
+  S.sizeText = function (w) {
+    if (!w.size) return "Size on request";
+    return inches(w.size) + (w.mat ? ", matted to " + inches(w.mat) : w.wood ? ", unmatted" : "");
+  };
+  S.priceText = function (w) { return w.price ? "$" + w.price.toLocaleString("en-US") : "Price on request"; };
+  S.spec = function (w) { return S.sizeText(w) + " · " + S.priceText(w); };
+  S.priceRange = function () {
+    var p = S.works.map(function (w) { return w.price; }).filter(Boolean);
+    return p.length ? "$" + Math.min.apply(null, p) + " to $" + Math.max.apply(null, p) : "";
+  };
   S.seriesOf = function (id) { return S.series.filter(function (s) { return s.id === id; })[0]; };
   S.hung = function () { return S.works.filter(function (w) { return w.photo; }); };
   S.inSeries = function (id) { return S.hung().filter(function (w) { return w.series === id; }); };

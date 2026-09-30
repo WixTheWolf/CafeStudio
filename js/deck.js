@@ -44,7 +44,9 @@
     mat.appendChild(img);
     mould.appendChild(mat);
     fig.appendChild(mould);
-    fig.appendChild(el("figcaption", null, w.title));
+    var cap = el("figcaption", null, w.title);
+    cap.appendChild(el("span", "spec", (w.size ? w.size.split("x").join(" × ") + " in · " : "") + S.priceText(w)));
+    fig.appendChild(cap);
     return fig;
   }
 
@@ -55,7 +57,7 @@
     for (var rows = 1; rows <= 3; rows++) {
       var per = Math.ceil(works.length / rows), split = [];
       for (var i = 0; i < works.length; i += per) split.push(works.slice(i, i + per));
-      var cap = (area.h - split.length * 40 - (split.length - 1) * 28) / split.length;
+      var cap = (area.h - split.length * 64 - (split.length - 1) * 28) / split.length;
       var h = Math.min(cap, area.max || 470);
       split.forEach(function (row) {
         var ratios = row.reduce(function (a, w) { return a + w.ratio; }, 0);
@@ -115,6 +117,22 @@
       $(".eyebrow", sl).textContent = "Two more series · " + pieces(count) + shown;
     }
     hang($(".hang", sl), works, { w: 1380, h: 590, max: works.length <= 3 ? 470 : 420 });
+  });
+
+  // The price list: every series with its pieces, sizes and prices.
+  $("#d-price-eyebrow").textContent = "The collection · " + pieces(S.total()) + " · " + S.priceRange();
+  S.series.forEach(function (se) {
+    var block = el("section", "pl-series"), ul = el("ul");
+    block.appendChild(el("h3", null, se.title));
+    inSeries(se.id).forEach(function (w) {
+      var li = el("li"), name = el("span", "pl-name", w.title);
+      name.appendChild(el("span", "pl-size", S.sizeText(w)));
+      li.appendChild(name);
+      li.appendChild(el("span", "pl-price", S.priceText(w)));
+      ul.appendChild(li);
+    });
+    block.appendChild(ul);
+    $("#d-prices").appendChild(block);
   });
 
   ["a-pleasant-pause", "but-first-tabby", "a-classic-breakfast", "fresh-baked"].forEach(function (slug, i) {

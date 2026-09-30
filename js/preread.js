@@ -27,6 +27,7 @@
   $("#p-series-list").textContent = listJoin(S.series.map(function (s) { return s.title; }));
   $("#p-total").textContent = S.pieces(S.total());
   $("#p-coll").textContent = "Six series, " + S.pieces(S.total());
+  $("#p-range").textContent = S.priceRange();
 
   var plateNo = 1;
   function plate(w, cls) {
@@ -40,6 +41,7 @@
     var cap = el("figcaption"), se = S.seriesOf(w.series);
     cap.appendChild(el("span", null, "Plate " + plateNo++));
     cap.appendChild(document.createTextNode(w.title + (se && !cls ? " · " + se.title : "")));
+    cap.appendChild(el("span", "spec", S.spec(w)));
     fig.appendChild(cap);
     return fig;
   }
@@ -87,6 +89,22 @@
     }
     if (note) block.appendChild(el("p", "aside", note + "."));
     $("#p-collection").appendChild(block);
+  });
+
+  S.series.forEach(function (se) {
+    var head = el("tr", "prices-series"), th = el("th", null, se.title);
+    th.colSpan = 2;
+    th.scope = "rowgroup";
+    head.appendChild(th);
+    $("#p-prices").appendChild(head);
+    S.inSeries(se.id).forEach(function (w) {
+      var tr = el("tr");
+      var td = el("td", null, w.title);
+      td.appendChild(el("span", "size", S.sizeText(w)));
+      tr.appendChild(td);
+      tr.appendChild(el("td", "price", S.priceText(w)));
+      $("#p-prices").appendChild(tr);
+    });
   });
 
   S.fyi.forEach(function (f) {

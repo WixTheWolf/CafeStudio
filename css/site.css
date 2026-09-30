@@ -292,7 +292,6 @@ main, .sheet { position: relative; z-index: 1; }
 }
 .film::backdrop { background: rgba(12, 8, 5, 0.94); }
 .film video { display: block; width: 100%; height: auto; max-height: 82vh; background: #000; box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.9); }
-.film-credit { margin: 14px 0 0; color: rgba(243, 227, 200, 0.55); font: 500 0.66rem/1.4 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; }
 .film-close {
   position: absolute;
   right: 0;

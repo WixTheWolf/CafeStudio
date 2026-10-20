@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Work · Cafe Studio</title>
+<meta name="description" content="Original paintings by Hannah, painted with coffee.">
+<meta name="theme-color" content="#1f2d2c">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Gloock&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body class="page-series">
+<a class="skip" href="#pieces">Skip to the paintings</a>
+
+<header class="bar" id="bar">
+  <a class="bar-mark" href="index.html#top">Cafe Studio</a>
+  <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+  <nav class="menu" id="menu" aria-label="Site">
+    <div class="menu-work">
+      <a href="index.html#work" class="menu-top" id="work-link" aria-haspopup="true">My Work</a>
+      <ul class="menu-series" id="menu-series"></ul>
+    </div>
+    <a href="index.html#medium">Medium</a>
+    <a href="index.html#home">Where It Belongs</a>
+    <a href="index.html#artist">Artist</a>
+    <a href="index.html#care">FYIs &amp; Care</a>
+    <a href="index.html#inquire">Inquiries</a>
+  </nav>
+</header>
+
+<main class="series-page">
+  <header class="section-head series-head">
+    <p class="eyebrow"><a href="index.html#work">My work</a></p>
+    <h1 id="s-title">My Work</h1>
+    <p id="s-blurb"></p>
+  </header>
+  <ul class="piece-grid" id="pieces"></ul>
+  <nav class="series-nav" id="series-nav" aria-label="Other series"></nav>
+</main>
+
+<footer class="foot">
+  <p class="foot-mark">Cafe Studio</p>
+  <p class="foot-line">Original paintings by Hannah, painted with coffee.</p>
+  <p class="fine"><span>© <span id="year">2026</span> <span id="legal">Cafe Studio, LLC</span></span><span id="contact-line"></span></p>
+</footer>
+
+<dialog class="viewer" id="viewer" aria-labelledby="v-title">
+  <div class="v-inner">
+    <div class="v-media">
+      <div class="v-art" id="v-art"></div>
+      <p class="v-hint" id="v-hint">Tap the painting to zoom in</p>
+      <div class="v-thumbs" id="v-thumbs"></div>
+    </div>
+    <div class="v-text">
+      <p class="eyebrow" id="v-meta">Series</p>
+      <h3 id="v-title">Painting</h3>
+      <p id="v-blurb"></p>
+      <p class="v-price" id="v-price"></p>
+      <p class="v-note" id="v-note"></p>
+      <div class="v-actions">
+        <a class="btn" href="index.html#inquire" id="v-ask">Inquire about this piece</a>
+        <button type="button" class="btn btn-quiet" id="v-close">Close</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script src="js/studio.js"></script>
+<script src="js/site.js"></script>
+</body>
+</html>

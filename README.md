@@ -6,7 +6,7 @@ Three pages, one static site with no build step and no dependencies:
 
 | Page | File | What it is |
 | --- | --- | --- |
-| Site | `index.html` | The scroll. It opens in the café as Hannah sees it: abstract macro loops of coffee (marbling oils, steam, light, a bloom on paper), each spreading over the last like a coffee stain, stirred by the pointer, until the last clears to the paper and leaves a ring. The ring blooms into the palette, and three close-ups of a brush (a pale wash, a stronger stroke, the last fine details) move with the scroll. Hannah's *Bean Up For Hours* then comes back together on the paper, wash by wash, and is hung on the gallery wall with her six series. Then you step inside: seven of her paintings hang one behind another, and scrolling walks through them, each one opening from the middle onto the next. Her close-ups fill the screen, her kitchen photos drift by in morning light, and the night café tells her story and takes enquiries. Every chapter has beats, and the page settles on them (see below). |
+| Site | `index.html`, `work.html` | A simple library of Hannah's work, every background a plain coffee colour or one of her paintings. The home page opens on *Bean Up For Hours*, enlarged across the first two screens, with her note on the medium; then one painting for each series (each links to its own page), her quote over *Fresh Baked*, her work at home, her artist statement, FYIs and care, and inquiries. A series page (`work.html?series=<id>`) shows every piece in a grid; a piece opens with its size, price, close-ups, a photo at home and a zoom. `work.html?series=<id>&piece=<slug>` opens straight on one piece, for links and QR codes. The menu reaches every series and section, and folds behind a Menu button on phones. |
 | Deck | `deck.html` | A 16-slide 16:9 deck: the film, statement, the artist, the medium, the process, the six series on the gallery wall with sizes and prices, close-ups, what to know about collecting, and the price list. Arrow keys, space, tap or swipe to move; `N` for speaker notes; `F` for full screen; link a slide as `deck#s5`. |
 | Preread | `preread.html` | A five-minute read to send before a meeting. Follows light and dark mode, prints cleanly. |
 
@@ -51,59 +51,24 @@ preread in its plate captions and price table. A work without a `price`
 shows "Price on request": You've Bean Amazing, Spill the Beans and It's
 Bean Real are still waiting on theirs.
 
-## How the animation works
+## How the site works
 
-- `js/develop.js` is a small WebGL renderer for Hannah's photos. In *build*
-  mode it puts a finished painting back on the paper in four stages, light
-  to dark: every pixel gets washes until it reaches its darkness in the
-  photo, each wash sweeps in with a ragged wet edge and a faint rim, and
-  the detail only sharpens in the last stage. The site scrolls through it,
-  and the deck and preread show the four stages. Which painting is set by
-  `feature` in `js/studio.js`. In *bleed* mode one close-up spreads over
-  another like spilled coffee.
-- `js/brew.js` paints the ring stain, the palette swatches and the painted
-  wordmarks, imitating coffee on cotton paper.
-- `js/reel.js` plays the café loops that open the site (`media/reel/`), in
-  WebGL: each loop spreads over the last as a stain with a dark wet rim, the
-  pointer stirs the picture, and the last loop clears to the paper. The
-  brush chapter uses it too: the footage arrives as a spreading stain, and
-  the scroll scrubs each brush clip (`media/fx/brush-*.mp4`, encoded with a
-  keyframe every six frames so scrubbing stays smooth). Without WebGL, or
-  with reduced motion, the posters stand in.
-- "Step inside" needs no WebGL: each frame is scaled by how far the
-  reader is from it, and a radial mask opens the painting in front. With
-  reduced motion the frames hang flat in a grid.
-- The scroll has beats: each line of the café, each note on the medium,
-  the full palette, each step with the brush, each layer of the process,
-  every painting in the middle of the gallery wall, each frame of "Step
-  inside" and each close-up (`beats()` in `js/site.js`). When the reader
-  stops, the page glides to the next beat in the direction they were
-  scrolling (or back to one they only just passed), so one turn of the
-  wheel or one swipe is one step of the story. It never pulls back to
-  where a scroll started, lets go at the first touch, wheel or key, and
-  stops at Hannah's story, which scrolls freely. The stage also follows
-  the scroll with a short glide, so wheel steps move it smoothly. With
-  reduced motion neither happens.
-- `js/crema.js` is the live WebGL cup of coffee in the deck.
+`js/site.js` builds the site from `js/studio.js`: the menu's list of series,
+the series cards and pages, the viewer, the photos at home and the inquiry
+form. Nothing on the site counts pieces or series, so a new painting appears
+as soon as it is added to `works`, and a new series as soon as it is added to
+`series` (its `cover` is the piece shown for it). The backgrounds are in
+`images/bg/`, enlarged from Hannah's own photos of the paintings.
 
-Without WebGL, the pages fall back to Hannah's photos as they are.
+The deck and the preread still use the WebGL renderers: `js/develop.js`
+rebuilds a painting light to dark from her photo, `js/brew.js` paints the
+paper and stains, and `js/crema.js` is the cup of coffee in the deck.
 
 ## The film
 
-`media/cafe-studio-film.mp4` is a film of a minute and a quarter, cut to
-the bar lines of an original coffee-house score (felt piano, brushed
-snare, upright bass, strings; generated with ElevenLabs Music). It is
-Hannah's paintings up close, fourteen of them, each named as it appears,
-with a few abstract macro shots of coffee (a drop, a brush, a bloom on
-paper, steam, light) opening it and giving it one breath in the middle.
-It plays from the "Watch the film" button on the site (or `/#film`), on
-the deck's second slide, and from the preread's closing links. The coffee
-footage was generated with Higgsfield and graded into her one colour; her
-paintings are her own photos, moved with a slow camera and never
-regenerated. `film/SHOTS.md` lists every shot, the music brief and every
-clip, and how to rebuild the film (`film/build.sh`), the montage
-(`film/montage.py`), the opening loops (`film/loops.sh`) and the brush
-close-ups (`film/brushes.py`).
+`media/cafe-studio-film.mp4` is used only by the deck now. It mixes
+Hannah's paintings with generated coffee footage and generated music, so it
+is not on the site. `film/SHOTS.md` lists every shot and how to rebuild it.
 
 ## Running it
 

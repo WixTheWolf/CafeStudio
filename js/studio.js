@@ -68,16 +68,18 @@ window.STUDIO = {
     { title: "Details last", text: "The crease down each bean and the darkest accents go in last, with the strongest coffee." }
   ],
 
-  // Series, in the order they hang. `count` is the size of the whole series,
-  // including pieces that have no photo yet; the pages say how many are
-  // still to come.
+  // Series, in the order they are shown. `cover` is the piece that stands
+  // for the series on the site's "My Work" section (the first piece if left
+  // out). `count` is the size of the whole series, used by the deck and the
+  // preread; the site shows no counts, so new pieces can be added any time.
+  // A new series needs only an entry here, and its pieces below.
   series: [
-    { id: "cool-beans", title: "Cool Beans", count: 7, blurb: "Coffee beans, up close." },
-    { id: "pairs-well-with", title: "Pairs Well With", count: 5, blurb: "The treats that belong next to a cup." },
-    { id: "coach", title: "My Coach and a Coffee", count: 3, blurb: "Coach bags, breakfast and the morning cup." },
-    { id: "golden-hour", title: "Golden Hour", count: 3, blurb: "Coffee in warm, low light." },
-    { id: "coffee-makers", title: "Coffee Makers", count: 2, blurb: "The brewers behind the cup." },
-    { id: "coffee-houses", title: "Coffee Houses", count: 1, blurb: "Coffee shops, painted in coffee." }
+    { id: "cool-beans", title: "Cool Beans", cover: "bean-up-for-hours", count: 7, blurb: "Coffee beans, up close." },
+    { id: "pairs-well-with", title: "Pairs Well With", cover: "fresh-baked", count: 5, blurb: "The treats that belong next to a cup." },
+    { id: "coach", title: "My Coach and a Coffee", cover: "but-first-tabby", count: 3, blurb: "Coach bags, breakfast and the morning cup." },
+    { id: "golden-hour", title: "Golden Hour", cover: "iced-americana", count: 3, blurb: "Coffee in warm, low light." },
+    { id: "coffee-makers", title: "Coffee Makers", cover: "percolate", count: 2, blurb: "The brewers behind the cup." },
+    { id: "coffee-houses", title: "Coffee Houses", cover: "coffee-house", count: 1, blurb: "Coffee shops, painted in coffee." }
   ],
 
   // mount: "matted" (photo shows the matted piece), "art" (the painting

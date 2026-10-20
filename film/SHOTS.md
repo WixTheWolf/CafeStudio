@@ -64,8 +64,7 @@ them are rendered from `titles.html` with the site's fonts.
 
 ## Generated clips (Higgsfield, Cinema Studio Video, pro)
 
-For the film and the café loops that open the site (`media/reel/`, cut by
-`film/loops.sh`):
+For the film:
 
 | Clip | Job |
 | --- | --- |
@@ -80,14 +79,6 @@ For the film and the café loops that open the site (`media/reel/`, cut by
 | bloom | 305148f1-5b27-462d-a6d0-178a5e5d2ef9 |
 | wash | 5638d98b-1be2-47d4-8b48-b84d165f1292 |
 
-For the brush close-ups on the site (`media/fx/`, made by `film/brushes.py`):
-
-| Clip | What it is | Job |
-| --- | --- | --- |
-| brush-wash | A wide brush laying a pale wash | 872d7a93-c231-4ada-8e39-c6f30549756c |
-| brush-wide | A round brush pooling a stronger stroke | 82c82f4f-2aa7-4380-ab65-8c6745fb05ff |
-| brush-line | A fine point drawing the last details | a98a5eaa-61f3-4121-aec6-a3d67d8c8b86 |
-
 ## Rebuilding
 
 Download the clips into one folder as `<clip>.mp4`, then from the
@@ -95,9 +86,7 @@ repository root:
 
     python film/montage.py                        # montage.mp4
     film/build.sh <clips-folder> media/cafe-studio-film.mp4
-    film/loops.sh <clips-folder> media/reel
-    python film/brushes.py <clips-folder> media/fx
 
 They need ffmpeg (`build.sh` also needs ffprobe) and the Python ones need
-Pillow. `build.sh` writes the master and a lighter `-web.mp4` copy; the site
-serves the web copy as `media/cafe-studio-film.mp4`.
+Pillow. `build.sh` writes the master and a lighter `-web.mp4` copy; the deck
+plays the web copy as `media/cafe-studio-film.mp4`.

@@ -510,13 +510,16 @@ body {
 }
 
 /* the film */
-.s-film .film-eyebrow { position: absolute; left: 150px; top: 40px; margin: 0; }
+.s-film .film-copy { position: absolute; left: 150px; top: 250px; width: 620px; color: var(--milk); }
+.s-film .film-copy .eyebrow { color: var(--crema); }
+.s-film .film-copy h2 { margin: 0.3em 0 0.45em; font: 400 76px/1.02 var(--f-display); }
+.s-film .film-copy p { margin: 0; font-size: 26px; line-height: 1.55; color: rgba(243, 227, 200, 0.82); }
 .s-film .film-video {
   position: absolute;
-  left: 150px;
-  top: 78px;
-  width: 1300px;
-  height: 731px;
+  right: 190px;
+  top: 60px;
+  width: 439px;
+  height: 780px;
   background: #000;
   box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.9);
 }

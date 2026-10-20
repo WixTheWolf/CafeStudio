@@ -47,6 +47,7 @@
         <h2>Painted with coffee.</h2>
         <p>I use instant coffee diluted with water to create a versatile painting medium. It offers a range of transparency similar to watercolor, yet it can be built up in layers to achieve the opacity of acrylics. I also love layering the medium to create a subtle sculptural effect adding texture and dramatic depth to my work.</p>
         <p class="panel-by">Hannah</p>
+        <button class="btn btn-quiet film-btn" id="film-btn" type="button"><span class="film-play" aria-hidden="true"></span>Watch Hannah in the studio <span class="film-len">0:54</span></button>
       </div>
       <p class="bg-credit">Background: <em>Bean Up For Hours</em></p>
     </section>
@@ -150,6 +151,13 @@
   <p class="foot-line">Original paintings by Hannah, painted with coffee.</p>
   <p class="fine"><span>© <span id="year">2026</span> <span id="legal">Cafe Studio, LLC</span></span><span id="contact-line"></span></p>
 </footer>
+
+<dialog class="film" id="film" aria-label="In the studio, a short film by Hannah">
+  <video id="film-video" controls playsinline preload="none" poster="media/studio-film-poster.jpg">
+    <source src="media/studio-film.mp4" type="video/mp4">
+  </video>
+  <button class="btn btn-quiet film-close" id="film-close" type="button">Close</button>
+</dialog>
 
 <dialog class="viewer" id="viewer" aria-labelledby="v-title">
   <div class="v-inner">

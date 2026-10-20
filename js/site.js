@@ -342,6 +342,27 @@
     });
   }
 
+  /* ---------- the film: Hannah's own footage ---------- */
+
+  var film = $("#film");
+  if (film) {
+    var filmVideo = $("#film-video");
+    var openFilm = function () {
+      if (film.showModal) film.showModal(); else film.setAttribute("open", "");
+      var pr = filmVideo.play();
+      if (pr && pr.catch) pr.catch(function () { /* the controls are there to start it */ });
+    };
+    var closeFilm = function () {
+      filmVideo.pause();
+      if (film.close) film.close(); else film.removeAttribute("open");
+    };
+    $("#film-btn").addEventListener("click", openFilm);
+    $("#film-close").addEventListener("click", closeFilm);
+    film.addEventListener("click", function (ev) { if (ev.target === film) closeFilm(); });
+    film.addEventListener("close", function () { filmVideo.pause(); });
+    if (location.hash === "#film") setTimeout(openFilm, 300);
+  }
+
   /* ---------- the footer ---------- */
 
   $("#year").textContent = new Date().getFullYear();

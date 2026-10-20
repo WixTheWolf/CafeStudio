@@ -66,9 +66,13 @@ paper and stains, and `js/crema.js` is the cup of coffee in the deck.
 
 ## The film
 
-`media/cafe-studio-film.mp4` is used only by the deck now. It mixes
-Hannah's paintings with generated coffee footage and generated music, so it
-is not on the site. `film/SHOTS.md` lists every shot and how to rebuild it.
+`media/studio-film.mp4`, "In the studio", is under a minute of Hannah's own
+phone footage with its own sound: the coffee ring she stamps on the back of
+every piece, a finished painting unmasked, *The Coffee House*, and the signed
+backs of the collection. It plays from the button in the Medium section of
+the site (or `/#film`) and on the deck's second slide. `film/build.sh` cuts
+it from her clips; the only processing is converting her phone's HDR video to
+ordinary video, so the colours stay as she filmed them.
 
 ## Running it
 

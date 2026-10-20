@@ -67,12 +67,21 @@ paper and stains, and `js/crema.js` is the cup of coffee in the deck.
 ## The film
 
 `media/studio-film.mp4`, "In the studio", is under a minute of Hannah's own
-phone footage with its own sound: the coffee ring she stamps on the back of
-every piece, a finished painting unmasked, *The Coffee House*, and the signed
-backs of the collection. It plays from the button in the Medium section of
-the site (or `/#film`) and on the deck's second slide. `film/build.sh` cuts
-it from her clips; the only processing is converting her phone's HDR video to
-ordinary video, so the colours stay as she filmed them.
+phone footage: the coffee ring she stamps on the back of every piece, a
+finished painting unmasked, *The Coffee House*, and the signed backs of the
+collection. The music is a licensed track from Epidemic Sound's library,
+"I Will Be Right Here With You" by Wendy Marcini, cut to the film's length; it
+is used under the Epidemic Sound subscription it was downloaded with. The film
+plays from the button in the Medium section of the site (or `/#film`) and on
+the deck's second slide. `film/build.sh` cuts it from her clips and the
+track; the only processing of her footage is converting her phone's HDR video
+to ordinary video, so the colours stay as she filmed them.
+
+## The name
+
+"Cafe Studio" is set in Bodoni Moda (bold italic) wherever it appears as a
+name: the home page, the bar, the footer, the deck and preread covers and the
+film's end card. The typeface is `--f-mark` in `css/base.css`.
 
 ## Running it
 

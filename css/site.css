@@ -44,7 +44,7 @@ a { color: inherit; }
   background: rgba(28, 18, 12, 0.94);
   color: var(--milk);
 }
-.bar-mark { font: 400 1.35rem/1 var(--f-display); text-decoration: none; white-space: nowrap; }
+.bar-mark { font: italic 700 1.4rem/1 var(--f-mark); text-decoration: none; white-space: nowrap; }
 .menu { display: flex; align-items: center; gap: clamp(14px, 2vw, 30px); }
 .menu a {
   font: 500 0.72rem/1 var(--f-mono);
@@ -157,11 +157,24 @@ a { color: inherit; }
 .hero-title {
   margin: 0;
   color: var(--milk);
-  font: 400 clamp(4.4rem, 15vw, 14rem)/0.84 var(--f-display);
+  font: italic 700 clamp(5rem, 14.5vw, 13.5rem)/0.9 var(--f-mark);
   letter-spacing: -0.015em;
   text-shadow: 0 4px 50px rgba(10, 5, 2, 0.75), 0 1px 3px rgba(10, 5, 2, 0.5);
 }
 .hero-title span { display: block; padding-left: 0.5em; }
+/* Bodoni's sturdier small-size cut keeps its fine strokes clear over the painting */
+.hero-title, .bar-mark, .foot-mark { font-optical-sizing: none; font-variation-settings: "opsz" 11; }
+.hero::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: min(1100px, 100%);
+  height: 75%;
+  background: radial-gradient(70% 70% at 25% 75%, rgba(28, 18, 12, 0.6), transparent 72%);
+  pointer-events: none;
+}
+.hero-title { position: relative; }
 .medium {
   position: relative;
   display: flex;
@@ -213,7 +226,6 @@ a { color: inherit; }
   max-height: 100%;
   width: auto;
   height: auto;
-  box-shadow: 0 30px 50px -30px rgba(0, 0, 0, 0.9);
   transition: transform 0.35s ease;
 }
 .mount-oval img { border-radius: 50%; }
@@ -454,7 +466,7 @@ a { color: inherit; }
   color: var(--milk);
   text-align: center;
 }
-.foot-mark { margin: 0; font: 400 clamp(2.6rem, 6vw, 4.4rem)/1 var(--f-display); }
+.foot-mark { margin: 0; font: italic 700 clamp(2.6rem, 6vw, 4.4rem)/1 var(--f-mark); }
 .foot-line { margin: 12px 0 0; color: rgba(243, 227, 200, 0.75); }
 .fine {
   display: flex;

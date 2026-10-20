@@ -225,7 +225,7 @@
   }
 
   function paintWordmark(c) {
-    var sc = size(c, 2), ctx = c.getContext("2d"), f = function (px) { return "400 " + Math.round(px * sc) + "px Gloock, Georgia, serif"; };
+    var sc = size(c, 2), ctx = c.getContext("2d"), f = function (px) { return "italic 700 " + Math.round(px * sc) + "px 'Bodoni Moda', Georgia, serif"; };
     ctx.clearRect(0, 0, c.width, c.height);
     B.washText(ctx, "Cafe", f(206), 12 * sc, 194 * sc, B.rng(31), { s: 0.62, u: sc * 1.2 });
     B.washText(ctx, "Studio", f(206), 120 * sc, 392 * sc, B.rng(32), { s: 0.7, u: sc * 1.2 });
@@ -261,7 +261,7 @@
   }
 
   var fontsReady = document.fonts && document.fonts.load
-    ? Promise.race([document.fonts.load("400 100px Gloock"), new Promise(function (res) { setTimeout(res, 2500); })])
+    ? Promise.race([document.fonts.load("italic 700 100px 'Bodoni Moda'"), new Promise(function (res) { setTimeout(res, 2500); })])
     : Promise.resolve();
 
   function paintSlide(i) {

@@ -216,7 +216,7 @@
     B.ring(ctx, w * 0.845, h * 0.44, h * 0.357, r, { u: u, s: 0.45, width: 0.02, gaps: 0.55, fill: 0 });
     B.drops(ctx, r, w * 0.64, h * 0.8, w * 0.02, 6, { u: u, s: 0.6 });
     var size = h * 0.4;
-    B.washText(ctx, "Cafe Studio", "400 " + Math.round(size) + "px Gloock, Georgia, serif", w * 0.06, h * 0.64, B.rng(9), { s: 0.64, u: size / 150 });
+    B.washText(ctx, "Cafe Studio", "italic 700 " + Math.round(size) + "px 'Bodoni Moda', Georgia, serif", w * 0.06, h * 0.64, B.rng(9), { s: 0.64, u: size / 150 });
     reveal(c, src);
   }
 
@@ -228,7 +228,7 @@
   }
 
   var fontsReady = document.fonts && document.fonts.load
-    ? Promise.race([document.fonts.load("400 100px Gloock"), new Promise(function (res) { setTimeout(res, 2500); })])
+    ? Promise.race([document.fonts.load("italic 700 100px 'Bodoni Moda'"), new Promise(function (res) { setTimeout(res, 2500); })])
     : Promise.resolve();
 
   function start() {

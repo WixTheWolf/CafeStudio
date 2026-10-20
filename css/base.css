@@ -17,6 +17,8 @@
   --wall-deep: #142120;
   --water: #9dbbb5;
 
+  /* the moniker: "Cafe Studio" wherever it is set as a name */
+  --f-mark: "Bodoni Moda", Didot, "Bodoni 72", Georgia, serif;
   --f-display: "Gloock", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
   --f-body: "Hanken Grotesk", "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
   --f-mono: "DM Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
